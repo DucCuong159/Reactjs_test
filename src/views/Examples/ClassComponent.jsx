@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 class ClassComponent extends React.Component {
   state = {
@@ -7,20 +7,28 @@ class ClassComponent extends React.Component {
   };
 
   handleEventChange(e) {
-    return this.setState({ ...this.state, name: e.target.value });
+    return this.setState({ name: e.target.value });
   }
 
   handleClick = () => {
     alert("Hello");
-  }
+  };
 
   render() {
     return (
-      <>
-        <div className="first"><input type="text" onChange={(e) => this.handleEventChange(e)} value={this.state.name}/></div>
-        <div className="second"><h1>Hello, {this.state.name} {this.state.age}!</h1></div>
-        <div className="third"><button onClick={() => this.handleClick()}>On Click</button></div>
-      </>
+      <Fragment>
+        <div className="first">
+          <input type="text" onChange={(e) => this.handleEventChange(e)} value={this.state.name} />
+        </div>
+        <div className="second">
+          <h1>
+            Hello, {this.state.name} {this.state.age}!
+          </h1>
+        </div>
+        <div className="third">
+          <button onClick={() => this.handleClick()}>On Click</button>
+        </div>
+      </Fragment>
     );
   }
 }
