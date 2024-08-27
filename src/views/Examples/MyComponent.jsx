@@ -1,33 +1,37 @@
 import React, { Fragment, useState } from "react";
-import ChildComponent from "./ChildComponent";
+import JobComponent from "./JobComponent";
+import AddComponent from "./AddComponent";
 
 const MyComponent = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [jobList, setJobList] = useState([
-    { id: "1", title: "Doctor", salary: "300" },
-    { id: "2", title: "Doctor", salary: "300" },
-    { id: "3", title: "Doctor", salary: "300" },
-  ]);
+  const [name, setName] = useState("");
+  const [salary, setSalary] = useState("");
+  const [jobList, setJobList] = useState([]);
 
-  const handleClick = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    alert(`Hello ${firstName} ${lastName}`);
+    if (!name || !salary) {
+      alert("Please enter a name and a salary");
+      return;
+    }
+    setJobList([...jobList, { id: ++jobList.length, title: name, salary: salary }]);
+    setName("");
+    setSalary("");
   };
+
+  const handleDelete = (id) => {
+    setJobList(jobList.filter((job) => job.id !== id));
+  }
 
   return (
     <Fragment>
-      <form className="form">
-        <label htmlFor="fname">First name:</label>
-        <input type="text" id="fname" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-        <br />
-        <label htmlFor="lname">Last name:</label>
-        <br />
-        <input type="text" id="lname" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-        <br />
-        <input type="button" value="Submit" onClick={(event) => handleClick(event)} />
-      </form>
-      <ChildComponent firstName={firstName} lastName={lastName} jobList={jobList}/>
+      <AddComponent
+        name={name}
+        salary={salary}
+        setName={setName}
+        setSalary={setSalary}
+        handleSubmit={handleSubmit}
+      />
+      <JobComponent name={name} salary={salary} jobList={jobList} handleDelete={handleDelete}/>
     </Fragment>
   );
 };

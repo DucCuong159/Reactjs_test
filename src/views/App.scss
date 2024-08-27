@@ -40,4 +40,17 @@
 .form {
   display: flex;
   flex-direction: column;
+  width: 40vw;
+  gap: 10px;
+
+  .input_form {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.show_item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
