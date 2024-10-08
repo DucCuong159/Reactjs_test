@@ -16,10 +16,10 @@
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  // display: flex;
+  // flex-direction: column;
+  // align-items: center;
+  // justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
 }
@@ -40,6 +40,7 @@
 .form {
   display: flex;
   flex-direction: column;
+  margin: auto;
   width: 40vw;
   gap: 10px;
 
@@ -49,8 +50,25 @@
   }
 }
 
-.show_item {
+.show_content {
+  margin: auto;
+  width: 40vw;
+
+  .show_item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border-bottom: 1px solid #eee;
+
+    &:first-child {
+      border-top: 1px solid #eee;
+      margin-top: 10px;
+    }
+  }
+}
+
+.algin-item {
   display: flex;
   align-items: center;
-  gap: 10px;
 }
