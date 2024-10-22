@@ -1,12 +1,12 @@
-// import Calculator from "../components/Caculator/Caculator";
-// import Company from "./Company/Company";
 import "./App.scss";
 import { ToastContainer } from "react-toastify";
 import Nav from "./Nav/Nav";
 import Home from "./Examples/Home";
-import MyComponent from "./Examples/MyComponent";
 import RandomUser from "../components/RandomUser/RandomUser";
 import { Route, Switch } from "react-router-dom";
+import JobComponent from "./Examples/JobComponent";
+import ListUsers from "./Users/ListUsers";
+import DetailUser from "./Users/DetailUser";
 
 function App() {
   return (
@@ -15,13 +15,11 @@ function App() {
         <Nav />
         <Switch>
           <Route path="/" component={Home} exact />
-          <Route path="/user" component={MyComponent} />
+          <Route path="/job" component={JobComponent} />
           <Route path="/random" component={RandomUser} />
+          <Route path="/users" component={ListUsers} exact />
+          <Route path="/users/:id" component={DetailUser} />
         </Switch>
-        {/* <MyComponent /> */}
-        {/* <Calculator defaultA="12" defaultB="10" defaultOperation="+" /> */}
-        {/* <RandomUser /> */}
-        {/* <Company /> */}
       </header>
       <ToastContainer
         autoClose={1000}

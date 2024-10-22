@@ -3,7 +3,7 @@ import AddComponent from "./AddComponent";
 import UserComponent from "./UserComponent";
 import { toast } from "react-toastify";
 
-const MyComponent = () => {
+const JobComponent = () => {
   const [userList, setUserList] = useState([]);
 
   const handleSubmit = (userInfo) => {
@@ -19,4 +19,4 @@ const MyComponent = () => {
   );
 };
 
-export default MyComponent;
+export default JobComponent;

@@ -10,11 +10,14 @@ const Nav = () => {
         <NavLink to="/" activeClassName="active" exact>
           Home
         </NavLink>
-        <NavLink to="/user" activeClassName="active">
-          Users
+        <NavLink to="/job" activeClassName="active">
+          Job
         </NavLink>
         <NavLink to="/random" activeClassName="active">
           Random
+        </NavLink>
+        <NavLink to="/users" activeClassName="active" exact>
+          User
         </NavLink>
       </div>
     </div>
