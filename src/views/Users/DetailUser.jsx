@@ -6,26 +6,30 @@ import {
 } from "react-router-dom/cjs/react-router-dom.min";
 
 const DetailUser = () => {
-  const params = useParams();
+  const { id } = useParams();
   const [user, setUser] = useState({});
-  let isEmptyObj = Object.keys(user).length === 0;
+  const [isEmptyObj, setIsEmptyObj] = useState(true);
   const history = useHistory();
-  const [isLoading, setIsLoading] = useState(false);
 
-  const FetchDetailUser = async (id) => {
-    setIsLoading(true);
-    await axios.get(`https://reqres.in/api/users/${id}`).then((response) => {
-      if (response?.status === 200 && response?.data?.data) {
-        setUser(response.data.data);
-        isEmptyObj = Object.keys(response.data.data).length === 0;
-        setIsLoading(false);
-      }
-    });
+  const FetchDetailUser = async (userId) => {
+    await axios
+      .get(`https://reqres.in/api/users/${userId}`)
+      .then((response) => {
+        if (response?.status === 200 && response?.data?.data) {
+          setUser(response.data.data);
+          setIsEmptyObj(Object.keys(response.data.data).length === 0);
+        }
+      })
+      .catch((e) => {
+        console.error("Error fetching user details:", e);
+      });
   };
 
   useEffect(() => {
-    FetchDetailUser(params?.id);
-  }, []);
+    if (id) {
+      FetchDetailUser(id);
+    }
+  }, [id]);
 
   const handleBackButton = () => {
     history.goBack();
@@ -33,8 +37,8 @@ const DetailUser = () => {
 
   return (
     <>
-      <div>hello world from detail user with id: {params.id}</div>
-      {isEmptyObj === false && !isLoading && (
+      <div>hello world from detail user with id: {id}</div>
+      {isEmptyObj === false && (
         <>
           <div>
             User's name: {user.first_name} - {user.last_name}
@@ -44,7 +48,11 @@ const DetailUser = () => {
             <img src={user.avatar} alt="avt" />
           </div>
           <div>
-            <button type="button" onClick={() => handleBackButton()}>
+            <button
+              type="button"
+              onClick={() => handleBackButton()}
+              style={{ cursor: "pointer" }}
+            >
               Back
             </button>
           </div>

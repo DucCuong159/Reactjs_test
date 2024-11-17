@@ -16,7 +16,7 @@ const Nav = () => {
         <NavLink to="/random" activeClassName="active">
           Random
         </NavLink>
-        <NavLink to="/users" activeClassName="active" exact>
+        <NavLink to="/users" activeClassName="active">
           User
         </NavLink>
       </div>

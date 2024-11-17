@@ -1,24 +1,34 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-const AddComponent = (props) => {
-  const { handleSubmit } = props;
-  const [name, setName] = useState("");
-  const [salary, setSalary] = useState();
+const initUser = {
+  name: "",
+  salary: "",
+};
 
-  const onSubmit = () => {
-    if (!name || !salary) {
+const AddComponent = () => {
+  const [user, setUser] = useState(initUser);
+  const userList = useSelector((state) => state.userList);
+  const dispatch = useDispatch();
+
+  const handleSubmit = () => {
+    if (!user.name || !user.salary) {
       toast.error("Please enter name and salary");
       return;
     }
     const userInfo = {
-      id: Math.floor(Math.random() * 100000 + 1),
-      name: name,
-      salary: salary,
+      id: userList.length + 1,
+      name: user.name,
+      salary: user.salary,
     };
-    handleSubmit(userInfo);
-    setName("");
-    setSalary("");
+    dispatch({ type: "CHANGE_USER_LIST", payload: [...userList, userInfo] });
+    toast.success(`Add user ${user.name} successfully!`);
+    setUser(initUser);
+  };
+
+  const onChangeInput = (value, type = "name" | "salary") => {
+    setUser({ ...user, [type]: value });
   };
 
   return (
@@ -28,8 +38,8 @@ const AddComponent = (props) => {
         <input
           type="text"
           id="fname"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={user.name}
+          onChange={(e) => onChangeInput(e.target.value, "name")}
         />
       </div>
       <div className="input_form">
@@ -37,12 +47,12 @@ const AddComponent = (props) => {
         <input
           type="text"
           id="lname"
-          value={salary}
-          onChange={(e) => setSalary(e.target.value)}
+          value={user.salary}
+          onChange={(e) => onChangeInput(e.target.value, "salary")}
         />
       </div>
       <br />
-      <input type="button" value="Submit" onClick={() => onSubmit()} />
+      <input type="button" value="Submit" onClick={() => handleSubmit()} />
     </form>
   );
 };
