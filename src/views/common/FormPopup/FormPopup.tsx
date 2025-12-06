@@ -1,5 +1,6 @@
 import React, { JSX, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import { ZodType } from "zod";
 
 // Types
 export interface FieldConfig {
@@ -23,7 +24,6 @@ export interface FieldConfig {
   accept?: string;
   rows?: number;
   defaultValue?: any;
-  validation?: (value: any, formData?: Record<string, any>) => boolean;
   maxLength?: number;
   style?: React.CSSProperties;
   multiple?: boolean;
@@ -35,6 +35,7 @@ interface FormPopupProps {
   title: string;
   fields: FieldConfig[];
   onSubmit: (data: Record<string, any>) => Promise<void>;
+  validationSchema?: ZodType<any>;
   initialData?: Record<string, any>;
   submitButtonText?: string;
   isLoading?: boolean;
@@ -161,6 +162,7 @@ const FormPopup: React.FC<FormPopupProps> = ({
   title,
   fields,
   onSubmit,
+  validationSchema,
   initialData = {},
   submitButtonText = "Submit",
   isLoading = false,
@@ -304,74 +306,36 @@ const FormPopup: React.FC<FormPopupProps> = ({
     }
   };
 
-  const validateField = (
-    field: FieldConfig,
-    value: any,
-    formData: Record<string, any>
-  ): string => {
-    // Required validation
-    if (field.required) {
-      if (field.type === "checkbox" && !value) return "required";
-      if (field.type === "file") {
-        // SỬA: Kiểm tra file từ filePreviews
-        const files = filePreviews[field.name] || [];
-        if (files.length === 0) return "required";
-      } else if (
-        field.type !== "checkbox" &&
-        (!value || value.toString().trim() === "")
-      ) {
-        return "required";
-      }
-    }
-
-    // Custom validation
-    if (field.validation && (value || field.required)) {
-      const isValid = field.validation(value, formData);
-      if (!isValid) return "invalid";
-    }
-
-    return "";
-  };
-
   const validateForm = (): boolean => {
+    if (!validationSchema) return true;
+
     const formData = collectFormData(fields, refsMap.current, filePreviews);
-    const newErrors: Record<string, string> = {};
+    const validationResult = validationSchema.safeParse(formData);
 
-    let hasMandatoryErrors = false;
-    let hasFormatErrors = false;
-    let hasEndDateError = false;
+    if (!validationResult.success) {
+      const newErrors: Record<string, string> = {};
+      let firstErrorMessage: string | null = null;
 
-    fields.forEach((field) => {
-      const value = formData[field.name];
-      const error = validateField(field, value, formData);
-
-      if (error) {
-        newErrors[field.name] = error;
-
-        if (error === "required") {
-          hasMandatoryErrors = true;
-        } else if (field.name === "endDate" && error === "invalid") {
-          hasEndDateError = true;
-        } else {
-          hasFormatErrors = true;
+      validationResult.error.issues.forEach((err) => {
+        const fieldPath = err.path.join(".");
+        if (!newErrors[fieldPath]) {
+          newErrors[fieldPath] = err.message;
         }
-      }
-    });
+        if (!firstErrorMessage) {
+          firstErrorMessage = err.message;
+        }
+      });
 
-    setErrors(newErrors);
+      setErrors(newErrors);
 
-    // Show appropriate error message
-    if (Object.keys(newErrors).length > 0) {
-      if (hasEndDateError) {
-        showToast("End Date need after Start Date", "error");
-      } else if (hasMandatoryErrors) {
-        showToast("Please fill all mandatory fields", "error");
-      } else if (hasFormatErrors) {
-        showToast("Please check invalid fields", "error");
+      if (firstErrorMessage) {
+        showToast(firstErrorMessage, "error");
       }
+      return false;
     }
 
-    return Object.keys(newErrors).length === 0;
+    setErrors({});
+    return true;
   };
 
   // Real-time validation after first submit attempt
@@ -392,14 +356,19 @@ const FormPopup: React.FC<FormPopupProps> = ({
 
     if (hasAttemptedSubmit) {
       setTimeout(() => {
-        const formData = collectFormData(fields, refsMap.current, filePreviews);
-        const value = formData[fieldName];
-        const fieldError = validateField(field, value, formData);
-
-        setErrors((prev) => ({
-          ...prev,
-          [fieldName]: fieldError,
-        }));
+        if (validationSchema) {
+          const formData = collectFormData(
+            fields,
+            refsMap.current,
+            filePreviews
+          );
+          const validationResult = validationSchema.safeParse(formData);
+          if (validationResult.success) {
+            setErrors({});
+          } else {
+            validateForm();
+          }
+        }
       }, 100);
     }
   };
@@ -584,7 +553,6 @@ const FormPopup: React.FC<FormPopupProps> = ({
           {field.accept && (
             <p className="form-field-file__hint">Accept: {field.accept}</p>
           )}
-          {/* THÊM: Render file previews */}
           {renderFilePreview(field.name)}
         </div>
       ),
