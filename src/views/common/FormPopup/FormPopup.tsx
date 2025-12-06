@@ -214,7 +214,7 @@ const FormPopup: React.FC<FormPopupProps> = ({
           }
         });
     };
-  }, []);
+  }, [filePreviews]);
 
   const showToast = (message: string, type: "success" | "error") => {
     toast[type](message);

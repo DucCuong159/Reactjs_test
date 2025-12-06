@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { State } from "../../store/reducers/rootReducer";
+import type { RootState } from "../../store/index";
+import { changeUserList } from "../../store/slices/userSlice";
 
 const initUser = {
   name: "",
@@ -10,7 +11,7 @@ const initUser = {
 
 const AddComponent = () => {
   const [user, setUser] = useState(initUser);
-  const userList = useSelector((state: State) => state.userList);
+  const userList = useSelector((state: RootState) => state.user.userList);
   const dispatch = useDispatch();
 
   const handleFormSubmit = () => {
@@ -27,7 +28,7 @@ const AddComponent = () => {
       salary,
     };
 
-    dispatch({ type: "CHANGE_USER_LIST", payload: [...userList, newUser] });
+    dispatch(changeUserList([...userList, newUser]));
     toast.success(`Add user ${name} successfully!`);
     setUser(initUser);
   };
