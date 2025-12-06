@@ -1,7 +1,8 @@
 import React, { Fragment, JSX, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { State, User } from "../../store/reducers/rootReducer";
+import type { RootState } from "../../store/index";
+import { User, changeUserList, updateShowingList } from "../../store/slices/userSlice";
 
 const initUser = {
   id: 0,
@@ -15,7 +16,7 @@ interface UserComponentProps {
 
 const UserComponent = (props: UserComponentProps): JSX.Element => {
   const { userList } = props;
-  const isShowing = useSelector((state: State) => state.isShowing);
+  const isShowing = useSelector((state: RootState) => state.user.isShowing);
   const dispatch = useDispatch();
   const [editUser, setEditUser] = useState<User>(initUser);
   let isEmptyObj = Object.keys(editUser).length === 0;
@@ -24,7 +25,7 @@ const UserComponent = (props: UserComponentProps): JSX.Element => {
     const newUserList = userList.map((user) =>
       user.id === updatedUser.id ? { ...user, ...editUser } : user
     );
-    dispatch({ type: "CHANGE_USER_LIST", payload: newUserList });
+    dispatch(changeUserList(newUserList));
     setEditUser(initUser);
     toast.success(`Update user ${updatedUser.name} successfully!`);
   };
@@ -33,7 +34,7 @@ const UserComponent = (props: UserComponentProps): JSX.Element => {
     const updatedUserList = userList.filter(
       (user) => user.id !== currentUser.id
     );
-    dispatch({ type: "CHANGE_USER_LIST", payload: updatedUserList });
+    dispatch(changeUserList(updatedUserList));
     toast.success(`Deleted user ${currentUser.name} successfully!`);
   };
 
@@ -43,7 +44,7 @@ const UserComponent = (props: UserComponentProps): JSX.Element => {
   };
 
   const handleChangeShow = () => {
-    dispatch({ type: "UPDATE_SHOWING_LIST", payload: !isShowing });
+    dispatch(updateShowingList(!isShowing));
   };
 
   return (

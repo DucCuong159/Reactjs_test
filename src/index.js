@@ -1,23 +1,16 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import React, { JSX } from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
-import { createStore } from "redux";
 import reportWebVitals from "./reportWebVitals";
-import rootReducer from "./store/reducers/rootReducer.ts";
+import { store } from "./store/index";
 import "./styles/global.scss";
 import App from "./views/App";
 
-const reduxStore = createStore(
-  rootReducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__?.({ trace: true })
-);
-
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <Provider store={reduxStore}>
+  <Provider store={store}>
     <BrowserRouter>
       <App />
     </BrowserRouter>

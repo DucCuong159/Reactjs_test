@@ -23,6 +23,6 @@ export const validateMaxLength =
 export const validateURL = (url: string): boolean => {
   if (!url) return true; // Optional field
   const urlPattern =
-    /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+    /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\w .-]*)*\/?$/;
   return urlPattern.test(url);
 };

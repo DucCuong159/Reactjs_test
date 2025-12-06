@@ -14,9 +14,6 @@ const NavBar: React.FC = () => {
       <NavLink activeClassName="active" to="/random">
         Random User
       </NavLink>
-      <NavLink activeClassName="active" to="/users">
-        Users
-      </NavLink>
       <NavLink activeClassName="active" to="/model">
         Model Form
       </NavLink>
