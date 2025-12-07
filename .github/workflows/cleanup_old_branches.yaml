@@ -139,7 +139,8 @@ jobs:
           fi
 
           # Save to output
-          echo "deleted_count=${#branches_to_delete[@]}" >> $GITHUB_OUTPUT
+          echo "deleted_count=$deleted_count" >> $GITHUB_OUTPUT
+          echo "failed_count=$failed_count" >> $GITHUB_OUTPUT
           echo "kept_count=${#branches_to_keep[@]}" >> $GITHUB_OUTPUT
 
       - name: Create summary
