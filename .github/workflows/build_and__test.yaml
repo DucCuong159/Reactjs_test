@@ -1,0 +1,54 @@
+name: PR Build and Test
+run-name: "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}"
+
+on:
+  pull_request:
+    branches:
+      - main
+      - prd
+      - stg
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build-and-test:
+    name: Build Application
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run TypeScript type check
+        run: npx tsc --noEmit
+
+      - name: Build project
+        run: yarn build --release
+        env:
+          CI: true
+
+      - name: Run tests
+        run: yarn test --passWithNoTests --watchAll=false
+        env:
+          CI: true
+
+      - name: Upload test coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
