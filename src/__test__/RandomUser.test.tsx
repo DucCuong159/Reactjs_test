@@ -6,7 +6,7 @@ jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe("<RandomUser/>", () => {
-  test.only("loads user when click on the button", async () => {
+  test("loads user when click on the button", async () => {
     render(<RandomUser />);
     mockedAxios.get.mockResolvedValueOnce({ data: MOCK_USER_RESPONSE });
     const button = screen.getByRole("button");
