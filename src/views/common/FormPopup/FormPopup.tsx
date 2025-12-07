@@ -29,14 +29,55 @@ export interface FieldConfig {
   multiple?: boolean;
 }
 
-interface FormPopupProps {
+/**
+ * Props for the FormPopup component.
+ *
+ * @template T - The type of data that will be submitted. Defaults to Record<string, any>.
+ *
+ * @remarks
+ * **Type Safety Contract:**
+ * When using a generic type T with validationSchema, consumers MUST ensure that:
+ * 1. The validationSchema's output type matches the generic type T
+ * 2. The initialData shape conforms to Partial<T>
+ *
+ * TypeScript cannot enforce compile-time alignment between the schema and T,
+ * so runtime validation via the schema is the primary type safety mechanism.
+ *
+ * @example
+ * ```tsx
+ * // Define your schema and infer the type
+ * const userSchema = z.object({
+ *   name: z.string(),
+ *   email: z.string().email(),
+ * });
+ * type UserFormData = z.infer<typeof userSchema>;
+ *
+ * // Use the inferred type as the generic parameter
+ * <FormPopup<UserFormData>
+ *   validationSchema={userSchema}
+ *   onSubmit={async (data) => {
+ *     // data is typed as UserFormData
+ *   }}
+ * />
+ * ```
+ */
+interface FormPopupProps<T = Record<string, any>> {
   isOpenPopup: boolean;
   onClose: () => void;
   title: string;
   fields: FieldConfig[];
-  onSubmit: (data: Record<string, any>) => Promise<void>;
+  /**
+   * Callback invoked with validated form data.
+   * The data will be cast to type T after validation.
+   */
+  onSubmit: (data: T) => Promise<void>;
+  /**
+   * Optional Zod validation schema.
+   * IMPORTANT: The schema's output type should match the generic type T.
+   */
   validationSchema?: ZodType<any>;
-  initialData?: Record<string, any>;
+  /** Initial form data. Should conform to Partial<T>. */
+  initialData?: Partial<T>;
   submitButtonText?: string;
   isLoading?: boolean;
   maxWidth?: string;
@@ -156,18 +197,18 @@ const getFileIcon = (file: File): string => {
   }
 };
 
-const FormPopup: React.FC<FormPopupProps> = ({
+const FormPopup = <T = Record<string, any>,>({
   isOpenPopup,
   onClose,
   title,
   fields,
   onSubmit,
   validationSchema,
-  initialData = {},
+  initialData,
   submitButtonText = "Submit",
   isLoading = false,
   maxWidth = "max-w-2xl",
-}) => {
+}: FormPopupProps<T>) => {
   const refsMap = useRef<Record<string, React.RefObject<any>>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -223,7 +264,10 @@ const FormPopup: React.FC<FormPopupProps> = ({
   const resetForm = () => {
     fields.forEach((field) => {
       const ref = refsMap.current[field.name];
-      const initialValue = initialData[field.name] ?? field.defaultValue ?? "";
+      const initialValue =
+        (initialData && field.name in initialData
+          ? initialData[field.name as keyof typeof initialData]
+          : field.defaultValue) ?? "";
       setFieldValue(field, ref, initialValue);
     });
   };
@@ -415,7 +459,7 @@ const FormPopup: React.FC<FormPopupProps> = ({
 
     try {
       const formData = collectFormData(fields, refsMap.current, filePreviews); // SỬA: Thêm filePreviews
-      await onSubmit(formData);
+      await onSubmit(formData as T);
       showToast("Dữ liệu đã được lưu thành công!", "success");
 
       setTimeout(() => {
