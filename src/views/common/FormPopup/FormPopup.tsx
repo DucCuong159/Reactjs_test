@@ -254,7 +254,7 @@ const FormPopup = <T = Record<string, any>,>({
       });
       setFilePreviews(initialFilePreviews);
     }
-  }, [isOpenPopup, initialData]);
+  }, [isOpenPopup, initialData, fields, resetForm, updateCharCounts]);
 
   // Cleanup object URLs khi component unmount
   useEffect(() => {
@@ -301,7 +301,7 @@ const FormPopup = <T = Record<string, any>,>({
     toast[type](message);
   };
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     // Reset dateRangeValues from initialData
     const newDateRangeValues: Record<
       string,
@@ -335,9 +335,9 @@ const FormPopup = <T = Record<string, any>,>({
     });
 
     setDateRangeValues(newDateRangeValues);
-  };
+  }, [fields, initialData]);
 
-  const updateCharCounts = () => {
+  const updateCharCounts = useCallback(() => {
     const counts: Record<string, number> = {};
     fields.forEach((field) => {
       if (field.maxLength) {
@@ -348,7 +348,7 @@ const FormPopup = <T = Record<string, any>,>({
       }
     });
     setCharCounts(counts);
-  };
+  }, [fields]);
 
   // ADD: Handle file upload
   const handleFileChange = (fieldName: string, files: FileList | null) => {
