@@ -61,9 +61,14 @@
 }
 
 .todo-list {
-  column-count: 2;
-  column-gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(
+    2,
+    minmax(0, 1fr)
+  ); /* Force equal width columns */
+  gap: 1rem;
   margin-bottom: 2rem;
+  align-items: start; /* Don't stretch items to match row height */
 }
 
 .todo-item {
@@ -76,8 +81,6 @@
   background: #ffffff;
   transition: all 0.3s;
   position: relative;
-  break-inside: avoid; // Prevent item from breaking across columns
-  margin-bottom: 1rem; // Gap between items in same column
 }
 
 .todo-item:hover {
@@ -196,8 +199,8 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  word-break: break-all; // Break long continuous strings
-  overflow-wrap: anywhere;
+  word-break: normal; /* Don't break words indiscriminately */
+  overflow-wrap: break-word; /* Break only if word is too long */
 }
 
 .todo-dates {
@@ -376,8 +379,8 @@
 
 .stats {
   display: flex;
-  align-items: center; /* Căn giữa theo chiều dọc */
-  gap: 1.5rem; /* Tăng khoảng cách giữa các stats một chút cho thoáng */
+  align-items: center; /* Center vertically */
+  gap: 1.5rem; /* Increase spacing between stats for better readability */
   margin-bottom: 1rem;
   padding: 0.5rem 0.25rem;
   font-weight: 500;
@@ -390,7 +393,7 @@
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
-  white-space: nowrap; /* Không xuống dòng */
+  white-space: nowrap; /* Prevent line wrapping */
 }
 
 .stat-label {
@@ -432,8 +435,8 @@
 /* View Popup Styles */
 .view-todo-details h3 {
   word-wrap: break-word;
-  word-break: break-all; // Break even continuous strings like numbers
-  overflow-wrap: anywhere;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .view-popup-header-row {
@@ -458,8 +461,8 @@
   margin-top: 0.25rem;
   white-space: pre-wrap;
   word-wrap: break-word;
-  word-break: break-all; // Break continuous strings like numbers
-  overflow-wrap: anywhere;
+  word-break: normal;
+  overflow-wrap: break-word;
   max-height: 400px;
   overflow-y: auto;
 }

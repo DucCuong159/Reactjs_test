@@ -93,7 +93,7 @@ interface FormPopupProps<T = Record<string, any>> {
 }
 
 interface FilePreview {
-  file: File;
+  file: FileLike;
   id: string;
   preview?: string;
 }
@@ -155,12 +155,16 @@ const setFieldValue = (
   (fieldHandlers[field.type] || fieldHandlers.default)();
 };
 
-// THÊM: Utility functions cho file handling
+// ADD: Utility functions for file handling
 const generateFileId = (): string => {
   return Math.random().toString(36).substring(2, 15);
 };
 
-const isImageFile = (file: File): boolean => {
+type FileLike =
+  | File
+  | { name: string; size: number; type: string; url?: string };
+
+const isImageFile = (file: FileLike): boolean => {
   return file.type.startsWith("image/");
 };
 
@@ -172,7 +176,7 @@ const formatFileSize = (bytes: number): string => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 };
 
-const getFileIcon = (file: File): string => {
+const getFileIcon = (file: FileLike): string => {
   const extension = file.name.split(".").pop()?.toLowerCase();
   switch (extension) {
     case "pdf":
@@ -236,6 +240,16 @@ const FormPopup = <T = Record<string, any>,>({
       fields.forEach((field) => {
         if (field.type === "file") {
           initialFilePreviews[field.name] = [];
+
+          // Populate from initialData if available
+          const existingFiles = (initialData as any)?.[field.name];
+          if (Array.isArray(existingFiles)) {
+            initialFilePreviews[field.name] = existingFiles.map((f: any) => ({
+              file: f,
+              id: Math.random().toString(36).substring(2, 15),
+              preview: f.url,
+            }));
+          }
         }
       });
       setFilePreviews(initialFilePreviews);
@@ -336,7 +350,7 @@ const FormPopup = <T = Record<string, any>,>({
     setCharCounts(counts);
   };
 
-  // THÊM: Xử lý file upload
+  // ADD: Handle file upload
   const handleFileChange = (fieldName: string, files: FileList | null) => {
     if (!files || files.length === 0) return;
 
@@ -351,7 +365,7 @@ const FormPopup = <T = Record<string, any>,>({
         id: generateFileId(),
       };
 
-      // Tạo preview cho ảnh
+      // Create preview for images
       if (isImageFile(file)) {
         filePreview.preview = URL.createObjectURL(file);
       }
@@ -366,19 +380,19 @@ const FormPopup = <T = Record<string, any>,>({
         : newFiles,
     }));
 
-    // Reset input value để có thể chọn lại cùng file
+    // Reset input value to allow selecting the same file again
     const ref = refsMap.current[fieldName];
     if (ref?.current) {
       ref.current.value = "";
     }
 
-    // Trigger validation nếu đã attempt submit
+    // Trigger validation if submit was attempted
     if (hasAttemptedSubmit) {
       handleFieldChange(fieldName);
     }
   };
 
-  // THÊM: Xóa file
+  // ADD: Remove file
   const removeFile = (fieldName: string, fileId: string) => {
     setFilePreviews((prev) => {
       const fieldFiles = prev[fieldName] || [];
@@ -395,7 +409,7 @@ const FormPopup = <T = Record<string, any>,>({
       };
     });
 
-    // Trigger validation nếu đã attempt submit
+    // Trigger validation if submit was attempted
     if (hasAttemptedSubmit) {
       handleFieldChange(fieldName);
     }
@@ -498,7 +512,7 @@ const FormPopup = <T = Record<string, any>,>({
       await onSubmit(formData as T);
       onClose();
     } catch (error) {
-      showToast("Có lỗi xảy ra khi lưu dữ liệu!", "error");
+      showToast("An error occurred while saving data!", "error");
       console.error("Form submission error:", error);
     } finally {
       setIsSubmitting(false);
@@ -514,7 +528,7 @@ const FormPopup = <T = Record<string, any>,>({
     }
   };
 
-  // THÊM: Render file preview blocks
+  // ADD: Render file preview blocks
   const renderFilePreview = (fieldName: string) => {
     const files = filePreviews[fieldName] || [];
     if (files.length === 0) return null;
@@ -652,7 +666,6 @@ const FormPopup = <T = Record<string, any>,>({
         return (
           <div style={field.style}>
             <RangePicker
-              ref={ref}
               style={{ width: "100%" }}
               placeholder={["Start Date", "End Date"]}
               format="YYYY-MM-DD"
@@ -676,7 +689,7 @@ const FormPopup = <T = Record<string, any>,>({
             id={field.name}
             type="file"
             accept={field.accept}
-            multiple={field.multiple} // THÊM: Hỗ trợ multiple
+            multiple={field.multiple} // ADD: Support multiple files
             className={`${baseClassName} form-field--file`}
             onChange={(e) => handleFileChange(field.name, e.target.files)}
           />

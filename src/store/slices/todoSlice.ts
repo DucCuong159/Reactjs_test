@@ -1,5 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+export interface TodoAttachment {
+  name: string;
+  size: number;
+  type: string;
+  url?: string;
+}
+
 export interface Todo {
   id: number;
   name: string;
@@ -7,7 +14,7 @@ export interface Todo {
   status: "todo" | "in-progress" | "done";
   startDate?: string;
   endDate?: string;
-  attachments: File[];
+  attachments: TodoAttachment[];
 }
 
 export type SortOption = "name" | "date" | "status" | "none";

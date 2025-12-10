@@ -21,6 +21,7 @@ import {
   setSortBy,
   SortOption,
   Todo,
+  TodoAttachment,
   updateTodo,
 } from "../../../store/slices/todoSlice";
 import FormPopup, { FieldConfig } from "../../common/FormPopup/FormPopup";
@@ -120,9 +121,23 @@ export default function TodoList(): JSX.Element {
         onEnd: (evt) => {
           const { oldIndex, newIndex } = evt;
           if (oldIndex !== undefined && newIndex !== undefined) {
+            // Get the actual todo items from paginatedTodos
+            const draggedItem = paginatedTodos[oldIndex];
+            const targetItem = paginatedTodos[newIndex];
+            if (!draggedItem || !targetItem) return;
+
+            // Find actual indices in the full todos array
+            const actualOldIndex = todos.findIndex(
+              (t) => t.id === draggedItem.id
+            );
+            const actualNewIndex = todos.findIndex(
+              (t) => t.id === targetItem.id
+            );
+            if (actualOldIndex === -1 || actualNewIndex === -1) return;
+
             const newTodos = [...todos];
-            const [removed] = newTodos.splice(oldIndex, 1);
-            newTodos.splice(newIndex, 0, removed);
+            const [removed] = newTodos.splice(actualOldIndex, 1);
+            newTodos.splice(actualNewIndex, 0, removed);
             dispatch(reorderTodos(newTodos));
           }
         },
@@ -134,7 +149,7 @@ export default function TodoList(): JSX.Element {
         sortableInstance.current.destroy();
       }
     };
-  }, [todos, dispatch]);
+  }, [todos, paginatedTodos, dispatch]);
 
   // Form fields configuration
   const formFields: FieldConfig[] = [
@@ -203,6 +218,29 @@ export default function TodoList(): JSX.Element {
     // Extract dates from dateRange
     const [startDate, endDate] = data.dateRange || [undefined, undefined];
 
+    // Convert new files to TodoAttachment objects
+    // Note: In a real app, you would upload files to a server here and get URLs back
+    // For this demo, we'll create object URLs for new files but note that
+    // this isn't persistent across reloads if not handled properly
+    const processedAttachments: TodoAttachment[] = [];
+
+    if (data.attachments && Array.isArray(data.attachments)) {
+      data.attachments.forEach((file: any) => {
+        // If it's already a TodoAttachment (from existing data), keep it
+        if (!file.lastModified && file.name && file.type && file.size) {
+          processedAttachments.push(file as TodoAttachment);
+        } else if (file instanceof File) {
+          // It's a new File object, convert it
+          processedAttachments.push({
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            url: URL.createObjectURL(file), // Create temporary URL for preview
+          });
+        }
+      });
+    }
+
     if (editingTodo) {
       // Update existing todo
       dispatch(
@@ -213,7 +251,7 @@ export default function TodoList(): JSX.Element {
           status: data.status,
           startDate,
           endDate,
-          attachments: data.attachments || [],
+          attachments: processedAttachments,
         })
       );
       toast.success("Successfully edited!");
@@ -226,7 +264,7 @@ export default function TodoList(): JSX.Element {
           status: data.status,
           startDate,
           endDate,
-          attachments: data.attachments || [],
+          attachments: processedAttachments,
         })
       );
       toast.success("Successfully created!");
@@ -280,6 +318,7 @@ export default function TodoList(): JSX.Element {
         description: editingTodo.description,
         status: editingTodo.status,
         dateRange: [editingTodo.startDate, editingTodo.endDate],
+        attachments: editingTodo.attachments,
       };
     }
     return undefined;
@@ -404,14 +443,14 @@ export default function TodoList(): JSX.Element {
               <button
                 onClick={() => handleEditTodo(todo)}
                 className="edit-btn"
-                title="Sửa"
+                title="Edit"
               >
                 <EditIcon className="icon-edit" />
               </button>
               <button
                 onClick={() => deleteTodo(todo.id)}
                 className="delete-btn"
-                title="Xóa"
+                title="Delete"
               >
                 <DeleteIcon className="icon-delete" />
               </button>

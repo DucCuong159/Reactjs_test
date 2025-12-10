@@ -206,17 +206,6 @@ input[type="date"].form-field {
     cursor: pointer;
     opacity: 0;
   }
-
-  /* Show calendar icon on the right */
-  &::after {
-    content: "📅";
-    position: absolute;
-    right: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    font-size: 1rem;
-  }
 }
 
 /* Radio buttons */
