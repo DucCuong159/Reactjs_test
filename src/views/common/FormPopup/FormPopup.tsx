@@ -2,7 +2,7 @@ import { DatePicker } from "antd";
 import "antd/dist/reset.css";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
-import React, { JSX, useEffect, useRef, useState } from "react";
+import React, { JSX, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { ZodType } from "zod";
 import "./FormPopup.scss";
@@ -229,6 +229,56 @@ const FormPopup = <T = Record<string, any>,>({
     });
   }, [fields]);
 
+  // Define resetForm and updateCharCounts before they are used in useEffect
+  const resetForm = useCallback(() => {
+    // Reset dateRangeValues from initialData
+    const newDateRangeValues: Record<
+      string,
+      [Dayjs | null, Dayjs | null] | null
+    > = {};
+
+    fields.forEach((field) => {
+      if (field.type === "date-range") {
+        const initialValue =
+          initialData && field.name in initialData
+            ? initialData[field.name as keyof typeof initialData]
+            : field.defaultValue;
+
+        if (initialValue && Array.isArray(initialValue)) {
+          const [start, end] = initialValue;
+          newDateRangeValues[field.name] = [
+            start ? dayjs(start) : null,
+            end ? dayjs(end) : null,
+          ];
+        } else {
+          newDateRangeValues[field.name] = null;
+        }
+      } else {
+        const ref = refsMap.current[field.name];
+        const initialValue =
+          (initialData && field.name in initialData
+            ? initialData[field.name as keyof typeof initialData]
+            : field.defaultValue) ?? "";
+        setFieldValue(field, ref, initialValue);
+      }
+    });
+
+    setDateRangeValues(newDateRangeValues);
+  }, [fields, initialData]);
+
+  const updateCharCounts = useCallback(() => {
+    const counts: Record<string, number> = {};
+    fields.forEach((field) => {
+      if (field.maxLength) {
+        const ref = refsMap.current[field.name];
+        if (ref?.current) {
+          counts[field.name] = ref.current.value?.length || 0;
+        }
+      }
+    });
+    setCharCounts(counts);
+  }, [fields]);
+
   // Reset form when popup opens/closes or initialData changes
   useEffect(() => {
     if (isOpenPopup) {
@@ -300,55 +350,6 @@ const FormPopup = <T = Record<string, any>,>({
   const showToast = (message: string, type: "success" | "error") => {
     toast[type](message);
   };
-
-  const resetForm = useCallback(() => {
-    // Reset dateRangeValues from initialData
-    const newDateRangeValues: Record<
-      string,
-      [Dayjs | null, Dayjs | null] | null
-    > = {};
-
-    fields.forEach((field) => {
-      if (field.type === "date-range") {
-        const initialValue =
-          initialData && field.name in initialData
-            ? initialData[field.name as keyof typeof initialData]
-            : field.defaultValue;
-
-        if (initialValue && Array.isArray(initialValue)) {
-          const [start, end] = initialValue;
-          newDateRangeValues[field.name] = [
-            start ? dayjs(start) : null,
-            end ? dayjs(end) : null,
-          ];
-        } else {
-          newDateRangeValues[field.name] = null;
-        }
-      } else {
-        const ref = refsMap.current[field.name];
-        const initialValue =
-          (initialData && field.name in initialData
-            ? initialData[field.name as keyof typeof initialData]
-            : field.defaultValue) ?? "";
-        setFieldValue(field, ref, initialValue);
-      }
-    });
-
-    setDateRangeValues(newDateRangeValues);
-  }, [fields, initialData]);
-
-  const updateCharCounts = useCallback(() => {
-    const counts: Record<string, number> = {};
-    fields.forEach((field) => {
-      if (field.maxLength) {
-        const ref = refsMap.current[field.name];
-        if (ref?.current) {
-          counts[field.name] = ref.current.value?.length || 0;
-        }
-      }
-    });
-    setCharCounts(counts);
-  }, [fields]);
 
   // ADD: Handle file upload
   const handleFileChange = (fieldName: string, files: FileList | null) => {
