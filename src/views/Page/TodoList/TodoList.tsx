@@ -130,6 +130,12 @@ export default function TodoList(): JSX.Element {
   const [viewingTodo, setViewingTodo] = useState<Todo | null>(null); // State for viewing todo details
   const sortableRef = useRef<HTMLDivElement>(null);
   const sortableInstance = useRef<Sortable | null>(null);
+  const todosRef = useRef(todos);
+
+  // Keep todosRef in sync with latest todos
+  useEffect(() => {
+    todosRef.current = todos;
+  }, [todos]);
 
   // Initialize Sortable
   useEffect(() => {
@@ -175,7 +181,7 @@ export default function TodoList(): JSX.Element {
   // Cleanup all blob URLs when component unmounts
   useEffect(() => {
     return () => {
-      todos.forEach((todo) => {
+      todosRef.current.forEach((todo) => {
         todo.attachments.forEach((att) => {
           if (att.url?.startsWith("blob:")) {
             URL.revokeObjectURL(att.url);
@@ -183,8 +189,7 @@ export default function TodoList(): JSX.Element {
         });
       });
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only run cleanup on unmount
+  }, []);
 
   // Form fields configuration
   const formFields: FieldConfig[] = [
