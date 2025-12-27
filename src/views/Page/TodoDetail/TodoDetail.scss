@@ -4,27 +4,10 @@
   padding: 2rem;
 }
 
-.not-found {
-  text-align: center;
-  padding: 4rem 2rem;
-
-  h2 {
-    margin-bottom: 1.5rem;
-    color: #6b7280;
-  }
-}
-
 .todo-detail-header {
   margin-bottom: 2rem;
 
-  .todo-header-row {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    flex-wrap: nowrap;
-  }
-
-  .todo-detail-title {
+  .todo-detail-title.ant-typography {
     font-size: 2rem;
     font-weight: bold;
     color: #1f2937;
@@ -34,14 +17,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    line-height: normal; // Reset Antd line-height if needed
   }
 
   .todo-detail-meta {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    flex-wrap: nowrap;
-    flex-shrink: 0;
     min-width: fit-content;
   }
 
@@ -51,7 +30,6 @@
     color: #6b7280;
     font-size: 0.95rem;
     white-space: nowrap;
-    flex-shrink: 0;
 
     .icon {
       margin-right: 4px;
@@ -74,17 +52,14 @@
 
 .todo-detail-info {
   .info-section {
-    margin-bottom: 2rem;
+    // Margin between sections handled by Space component layout
 
-    &:last-child {
-      margin-bottom: 0;
-    }
-
-    h3 {
+    // Target Ant Design Title (h5)
+    h5.ant-typography {
       font-size: 1rem;
       font-weight: 600;
       color: #374151;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.75rem !important; // Override Antd default margin
       display: flex;
       align-items: center;
 
@@ -98,18 +73,19 @@
       }
     }
 
+    // Target Ant Design Text/Paragraph
+    .ant-typography,
     p {
       margin: 0;
       color: #4b5563;
-    }
 
-    .description-text {
-      color: #4b5563;
-      line-height: 1.6;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      word-break: break-word;
-      overflow-wrap: break-word;
+      &.description-text {
+        line-height: 1.6;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        word-break: break-word;
+        overflow-wrap: break-word;
+      }
     }
   }
 
@@ -156,8 +132,7 @@
   top: 2rem;
 
   .action-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    // Layout handled by Flex
+    width: 100%;
   }
 }

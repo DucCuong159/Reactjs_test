@@ -1,4 +1,4 @@
-import { Button, Card, message } from "antd";
+import { Button, Card, Flex, message, Result, Space, Typography } from "antd";
 import { useEffect, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { ReactComponent as AttachmentIcon } from "../../../assets/svg/attachment.svg";
@@ -30,6 +30,8 @@ import {
 } from "../TodoList/components/TodoForm/TodoForm";
 import "./TodoDetail.scss";
 
+const { Title, Text, Paragraph } = Typography;
+
 export default function TodoDetail() {
   const { id } = useParams<{ id: string }>();
   const history = useHistory();
@@ -60,12 +62,16 @@ export default function TodoDetail() {
   if (!isCreateMode && !todo) {
     return (
       <div className="todo-detail-container">
-        <div className="not-found">
-          <h2>Todo not found</h2>
-          <Button type="primary" onClick={() => history.push("/todo-list")}>
-            Back to List
-          </Button>
-        </div>
+        <Result
+          status="404"
+          title="Todo not found"
+          subTitle="The todo you're looking for doesn't exist."
+          extra={
+            <Button type="primary" onClick={() => history.push("/todo-list")}>
+              Back to List
+            </Button>
+          }
+        />
       </div>
     );
   }
@@ -140,29 +146,35 @@ export default function TodoDetail() {
   return (
     <div className="todo-detail-container">
       {/* Header */}
-      <div className="todo-detail-header">
+      <Flex vertical gap="middle" className="todo-detail-header">
         <BackLink />
         {!isEditMode && !isCreateMode ? (
-          <div className="todo-header-row">
-            <h1 className="todo-detail-title">{todo!.name}</h1>
-            <div className="todo-detail-meta">
+          <Flex
+            align="center"
+            justify="space-between"
+            className="todo-header-row"
+          >
+            <Title level={1} className="todo-detail-title">
+              {todo!.name}
+            </Title>
+            <Space size="middle" className="todo-detail-meta">
               <StatusTag status={todo!.status}>
                 {getStatusLabel(todo!.status)}
               </StatusTag>
               {(todo!.startDate || todo!.endDate) && (
-                <span className="todo-date">
+                <Text type="secondary" className="todo-date">
                   <CalendarIcon className="icon" />
                   {formatDateRange(todo!.startDate, todo!.endDate)}
-                </span>
+                </Text>
               )}
-            </div>
-          </div>
+            </Space>
+          </Flex>
         ) : (
-          <h1 className="todo-detail-title">
+          <Title level={1} className="todo-detail-title">
             {isCreateMode ? "Create New Task" : "Edit Task"}
-          </h1>
+          </Title>
         )}
-      </div>
+      </Flex>
 
       {/* Content */}
       <div className="todo-detail-content">
@@ -191,7 +203,7 @@ export default function TodoDetail() {
 
             {/* Right: Actions */}
             <Card title="Actions" className="todo-detail-actions">
-              <div className="action-buttons">
+              <Flex vertical gap="middle" className="action-buttons">
                 <Button
                   type="primary"
                   size="large"
@@ -214,66 +226,74 @@ export default function TodoDetail() {
                     Delete Task
                   </Button>
                 )}
-              </div>
+              </Flex>
             </Card>
           </>
         ) : (
           <>
             {/* Left: Info */}
             <Card title="To Do Information" className="todo-detail-info">
-              <div className="info-section">
-                <h3>Status</h3>
-                <StatusTag status={todo!.status}>
-                  {getStatusLabel(todo!.status)}
-                </StatusTag>
-              </div>
-
-              <div className="info-section">
-                <h3 className="section-title-with-icon">
-                  <CalendarIcon className="icon" />
-                  Timeline
-                </h3>
-                <p>{formatDateRange(todo!.startDate, todo!.endDate)}</p>
-              </div>
-
-              <div className="info-section">
-                <h3>Task Name</h3>
-                <p>{todo!.name}</p>
-              </div>
-
-              <div className="info-section">
-                <h3>Description</h3>
-                <p className="description-text">
-                  {todo!.description || "No description"}
-                </p>
-              </div>
-
-              {todo!.attachments && todo!.attachments.length > 0 && (
+              <Space
+                direction="vertical"
+                size="large"
+                style={{ width: "100%" }}
+              >
                 <div className="info-section">
-                  <h3 className="section-title-with-icon">
-                    <AttachmentIcon className="icon" />
-                    Attachments ({todo!.attachments.length})
-                  </h3>
-                  <ul className="attachments-list">
-                    {todo!.attachments.map((att, index) => (
-                      <li key={index} className="attachment-item">
-                        <a
-                          href={att.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {att.name}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
+                  <Title level={5}>Status</Title>
+                  <StatusTag status={todo!.status}>
+                    {getStatusLabel(todo!.status)}
+                  </StatusTag>
                 </div>
-              )}
+
+                <div className="info-section">
+                  <Title level={5} className="section-title-with-icon">
+                    {/* User removed icon here in Step 1674, so keeping it removed */}
+                    Timeline
+                  </Title>
+                  <Text type="secondary">
+                    {formatDateRange(todo!.startDate, todo!.endDate)}
+                  </Text>
+                </div>
+
+                <div className="info-section">
+                  <Title level={5}>Task Name</Title>
+                  <Text>{todo!.name}</Text>
+                </div>
+
+                <div className="info-section">
+                  <Title level={5}>Description</Title>
+                  <Paragraph className="description-text">
+                    {todo!.description || "No description"}
+                  </Paragraph>
+                </div>
+
+                {todo!.attachments && todo!.attachments.length > 0 && (
+                  <div className="info-section">
+                    <Title level={5} className="section-title-with-icon">
+                      <AttachmentIcon className="icon" />
+                      Attachments ({todo!.attachments.length})
+                    </Title>
+                    <ul className="attachments-list">
+                      {todo!.attachments.map((att, index) => (
+                        <li key={index} className="attachment-item">
+                          <a
+                            href={att.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {att.name}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </Space>
             </Card>
 
             {/* Right: Actions */}
             <Card title="Actions" className="todo-detail-actions">
-              <div className="action-buttons">
+              <Flex vertical gap="middle" className="action-buttons">
                 <Button
                   type="primary"
                   size="large"
@@ -285,7 +305,7 @@ export default function TodoDetail() {
                 <Button danger size="large" block onClick={handleDelete}>
                   Delete Task
                 </Button>
-              </div>
+              </Flex>
             </Card>
           </>
         )}
