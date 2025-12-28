@@ -42,7 +42,7 @@
   }
 
   &.status-done {
-    @include status-border($status-done-border, $status-done-bg);
+    @include status-border($status-done-border);
   }
 }
 
@@ -157,7 +157,7 @@
   }
 
   &.status-done {
-    @include status-border($status-done-border, $status-done-bg);
+    @include status-border($status-done-border);
   }
 }
 

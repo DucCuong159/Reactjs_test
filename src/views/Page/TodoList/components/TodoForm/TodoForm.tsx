@@ -45,8 +45,9 @@ const todoSchema = z.object({
       z.array(z.instanceof(File)),
       z.array(
         z.object({
-          id: z.number().optional(),
           name: z.string(),
+          size: z.number(),
+          type: z.string(),
           url: z.string().optional(),
         })
       ),
@@ -78,6 +79,7 @@ interface TodoFormProps {
 export const TodoForm = React.forwardRef<TodoFormRef, TodoFormProps>(
   ({ initialData }, ref) => {
     const formRef = React.useRef<FormRef<TodoFormData>>(null);
+    const createdBlobUrls = React.useRef<string[]>([]);
 
     React.useImperativeHandle(ref, () => ({
       submit: (onSubmit) => {
@@ -86,6 +88,16 @@ export const TodoForm = React.forwardRef<TodoFormRef, TodoFormProps>(
         }
       },
     }));
+
+    // Cleanup blob URLs on unmount
+    React.useEffect(() => {
+      return () => {
+        createdBlobUrls.current.forEach((url) => {
+          URL.revokeObjectURL(url);
+        });
+        createdBlobUrls.current = [];
+      };
+    }, []);
 
     return (
       <Form
@@ -219,18 +231,28 @@ export const TodoForm = React.forwardRef<TodoFormRef, TodoFormProps>(
                     const fileList: UploadFile[] = value.map(
                       (item: any, index: number) => {
                         if (item instanceof File) {
+                          // Create blob URL for preview
+                          const previewUrl = URL.createObjectURL(item);
+                          // Track for cleanup
+                          if (!createdBlobUrls.current.includes(previewUrl)) {
+                            createdBlobUrls.current.push(previewUrl);
+                          }
                           return {
                             uid: (item as any).uid || `new-${index}`,
                             name: item.name,
                             status: "done",
+                            url: previewUrl,
+                            thumbUrl: previewUrl,
                             originFileObj: item,
                           } as UploadFile;
                         }
+                        // Existing attachment (TodoAttachment)
                         return {
-                          uid: item.id?.toString() || `existing-${index}`,
+                          uid: `existing-${index}`,
                           name: item.name,
                           status: "done",
                           url: item.url,
+                          thumbUrl: item.url, // Add thumbUrl for preview
                           originFileObj: item, // Store ref to original item
                         } as UploadFile;
                       }
