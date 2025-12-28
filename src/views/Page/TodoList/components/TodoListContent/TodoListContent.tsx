@@ -9,6 +9,7 @@ import {
   Todo,
 } from "../../../../../store/slices/todoSlice";
 import { formatDate } from "../../../../../utils/dateUtils";
+import { getStatusLabel } from "../../../../../utils/statusUtils";
 import { isEmpty } from "lodash";
 
 interface TodoListContentProps {
@@ -27,19 +28,6 @@ export const TodoListContent: React.FC<TodoListContentProps> = ({
 
   const getStatusClass = (status: string): string => {
     return `status-${status}`;
-  };
-
-  const getStatusLabel = (status: string): string => {
-    switch (status) {
-      case "todo":
-        return "To Do";
-      case "in-progress":
-        return "In Progress";
-      case "done":
-        return "Done";
-      default:
-        return status;
-    }
   };
 
   const handleTodoClick = (todoId: number) => {
