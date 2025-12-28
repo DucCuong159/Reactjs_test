@@ -8,13 +8,14 @@ import {
   Upload,
   UploadFile,
 } from "antd";
+import locale from "antd/es/date-picker/locale/vi_VN";
 import dayjs from "dayjs";
 import React from "react";
 import { Controller } from "react-hook-form";
 import { z } from "zod";
 import { FormLabel } from "../../../../common/FormLabel";
-
-import { Form, FormRef } from "../../../../common/Form/Form"; // Assuming FormRef is exported from there or similar
+import { Form, FormRef } from "../../../../common/Form/Form";
+import "./TodoForm.scss";
 
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
@@ -173,7 +174,8 @@ export const TodoForm = React.forwardRef<TodoFormRef, TodoFormProps>(
                   control={control}
                   render={({ field }) => (
                     <RangePicker
-                      style={{ width: "100%" }}
+                      locale={locale}
+                      className="date-range-picker"
                       value={
                         field.value && field.value[0] && field.value[1]
                           ? [dayjs(field.value[0]), dayjs(field.value[1])]
