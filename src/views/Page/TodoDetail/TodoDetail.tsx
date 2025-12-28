@@ -1,4 +1,13 @@
-import { Button, Card, Flex, message, Result, Space, Typography } from "antd";
+import {
+  Button,
+  Card,
+  Flex,
+  message,
+  Result,
+  Space,
+  Typography,
+  Upload,
+} from "antd";
 import { useEffect, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { ReactComponent as AttachmentIcon } from "../../../assets/svg/attachment.svg";
@@ -288,19 +297,20 @@ export default function TodoDetail() {
                       <AttachmentIcon className="icon" />
                       Attachments ({todo!.attachments.length})
                     </Title>
-                    <ul className="attachments-list">
-                      {todo!.attachments.map((att, index) => (
-                        <li key={index} className="attachment-item">
-                          <a
-                            href={att.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {att.name}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
+                    <Upload
+                      listType="picture"
+                      fileList={todo!.attachments.map((att, index) => ({
+                        uid: `${index}`,
+                        name: att.name,
+                        status: "done" as const,
+                        url: att.url,
+                        thumbUrl: att.url,
+                      }))}
+                      showUploadList={{
+                        showRemoveIcon: false,
+                        showDownloadIcon: true,
+                      }}
+                    />
                   </div>
                 )}
               </Space>

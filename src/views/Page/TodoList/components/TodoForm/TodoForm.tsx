@@ -227,6 +227,7 @@ export const TodoForm = React.forwardRef<TodoFormRef, TodoFormProps>(
 
                     return (
                       <Upload
+                        listType="picture"
                         fileList={fileList}
                         beforeUpload={() => false}
                         multiple
