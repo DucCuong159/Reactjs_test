@@ -45,6 +45,14 @@ export default function TodoDetail() {
   const isCreateMode = window.location.pathname === "/todo-create";
   const todo = isCreateMode ? null : todos.find((t) => t.id === Number(id));
 
+  // Capture attachments in a ref to prevent premature cleanup
+  const attachmentsRef = useRef(todo?.attachments);
+
+  // Keep ref updated when attachments change
+  useEffect(() => {
+    attachmentsRef.current = todo?.attachments;
+  }, [todo?.attachments]);
+
   // Auto enter edit mode for create
   useEffect(() => {
     if (isCreateMode) {
@@ -55,11 +63,11 @@ export default function TodoDetail() {
   // Reset detail state and cleanup blob URLs when component unmounts
   useEffect(() => {
     return () => {
-      // Cleanup blob URLs if todo exists and has attachments
-      if (todo?.attachments) revokeBlobUrls(todo.attachments);
+      // Cleanup blob URLs using ref (only on unmount)
+      if (attachmentsRef.current) revokeBlobUrls(attachmentsRef.current);
       dispatch(resetDetailState());
     };
-  }, [dispatch, todo]);
+  }, [dispatch]);
 
   if (!isCreateMode && !todo) {
     return (
