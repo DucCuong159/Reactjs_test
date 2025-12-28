@@ -1,10 +1,10 @@
-import { Button, Flex, Input, Select, Space } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import { Button, Flex, Input, Select, Space } from "antd";
 import { useHistory } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../../store/hooks";
 import {
-  setSearchQuery,
   setFilterStatus,
+  setSearchQuery,
   setSortBy,
   SortOption,
 } from "../../../../../store/slices/todoSlice";

@@ -6,6 +6,21 @@ body {
     "Helvetica Neue", Arial, sans-serif;
 }
 
+// Layout styles
+.app-layout {
+  min-height: 100vh;
+}
+
+.app-sider {
+  background: #fff;
+  box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
+}
+
+.app-content {
+  background: #f0f2f5;
+  overflow-y: auto;
+}
+
 // Optional: Custom scrollbar for content area
 .ant-layout-content {
   &::-webkit-scrollbar {

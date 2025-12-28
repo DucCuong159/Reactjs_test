@@ -11,23 +11,12 @@ const { Sider, Content } = Layout;
 
 function App() {
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout className="app-layout">
       <ScrollToTop />
-      <Sider
-        width={250}
-        style={{
-          background: "#fff",
-          boxShadow: "2px 0 8px 0 rgba(29, 35, 41, 0.05)",
-        }}
-      >
+      <Sider width={250} className="app-sider">
         <NavBar />
       </Sider>
-      <Content
-        style={{
-          background: "#f0f2f5",
-          overflowY: "auto",
-        }}
-      >
+      <Content className="app-content">
         <Switch>
           <Route path="/" component={Home} exact />
           <Route path="/todo-list" component={TodoList} exact />

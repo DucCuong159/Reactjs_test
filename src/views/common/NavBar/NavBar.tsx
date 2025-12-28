@@ -3,6 +3,7 @@ import { Menu } from "antd";
 import React from "react";
 import { FaReact } from "react-icons/fa";
 import { useHistory, useLocation } from "react-router-dom";
+import "./NavBar.scss";
 
 export const NavBar: React.FC = () => {
   const history = useHistory();
@@ -35,40 +36,16 @@ export const NavBar: React.FC = () => {
   ];
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        width: "100%",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-          padding: "16px 24px",
-          borderBottom: "1px solid #f0f0f0",
-          marginBottom: "8px",
-        }}
-      >
-        <FaReact style={{ fontSize: "24px", color: "#61DAFB" }} />
-        <span
-          style={{
-            fontWeight: "bold",
-            fontSize: "16px",
-            color: "#1f2937",
-          }}
-        >
-          React Website
-        </span>
+    <div className="navbar-container">
+      <div className="navbar-header">
+        <FaReact className="navbar-icon" />
+        <span className="navbar-title">React Website</span>
       </div>
       <Menu
         mode="inline"
         selectedKeys={[getSelectedKey()]}
         items={menuItems}
-        style={{ height: "100%", borderRight: 0 }}
+        className="navbar-menu"
       />
     </div>
   );
