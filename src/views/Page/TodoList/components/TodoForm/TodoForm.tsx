@@ -174,8 +174,7 @@ export const TodoForm = React.forwardRef<TodoFormRef, TodoFormProps>(
 
               {/* 🎓 CONTROLLER: For complex components (Ant Design RangePicker) */}
               <AntdForm.Item
-                label="Timeline"
-                required
+                label={<FormLabel required>Timeline</FormLabel>}
                 validateStatus={errors.dateRange ? "error" : ""}
                 help={errors.dateRange?.message as string}
               >
