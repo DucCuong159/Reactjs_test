@@ -257,11 +257,7 @@ export default function TodoDetail() {
           <>
             {/* Left: Info */}
             <Card title="To Do Information" className="todo-detail-info">
-              <Space
-                direction="vertical"
-                size="large"
-                style={{ width: "100%" }}
-              >
+              <Space direction="vertical" size="large" className="info-content">
                 <div className="info-section">
                   <Title level={5}>Status</Title>
                   <StatusTag status={todo!.status}>

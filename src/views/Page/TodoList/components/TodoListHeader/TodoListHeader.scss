@@ -1,0 +1,21 @@
+@import "../../../../../styles/variables";
+
+.todo-list-header {
+  width: 100%;
+  margin-bottom: $spacing-xl;
+}
+
+.todo-list-title {
+  margin: 0;
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+}
+
+.search-input {
+  width: 300px;
+}
+
+.filter-select,
+.sort-select {
+  width: 150px;
+}

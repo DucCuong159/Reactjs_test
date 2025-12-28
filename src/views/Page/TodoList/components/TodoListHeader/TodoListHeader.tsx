@@ -8,6 +8,7 @@ import {
   setSortBy,
   SortOption,
 } from "../../../../../store/slices/todoSlice";
+import "./TodoListHeader.scss";
 
 const { Search } = Input;
 
@@ -20,16 +21,10 @@ export const TodoListHeader: React.FC = () => {
   const sortDirection = useAppSelector((state) => state.todos.sortDirection);
 
   return (
-    <Space
-      direction="vertical"
-      size="large"
-      style={{ width: "100%", marginBottom: "1.5rem" }}
-    >
+    <Space direction="vertical" size="large" className="todo-list-header">
       {/* Title and Add Button */}
       <Flex justify="space-between" align="center">
-        <h1 style={{ margin: 0, fontSize: "2rem", fontWeight: "bold" }}>
-          📝 Todo List
-        </h1>
+        <h1 className="todo-list-title">📝 Todo List</h1>
         <Button
           type="primary"
           icon={<PlusOutlined />}
@@ -47,14 +42,14 @@ export const TodoListHeader: React.FC = () => {
           value={searchQuery}
           onChange={(e) => dispatch(setSearchQuery(e.target.value))}
           onSearch={(value) => dispatch(setSearchQuery(value))}
-          style={{ width: 300 }}
+          className="search-input"
           allowClear
         />
 
         <Select
           value={filterStatus}
           onChange={(value) => dispatch(setFilterStatus(value))}
-          style={{ width: 150 }}
+          className="filter-select"
         >
           <Select.Option value="all">All Status</Select.Option>
           <Select.Option value="todo">To Do</Select.Option>
@@ -66,7 +61,7 @@ export const TodoListHeader: React.FC = () => {
           <Select
             value={sortBy}
             onChange={(value: SortOption) => dispatch(setSortBy(value))}
-            style={{ width: 150 }}
+            className="sort-select"
           >
             <Select.Option value="none">No Sort</Select.Option>
             <Select.Option value="name">Name</Select.Option>
