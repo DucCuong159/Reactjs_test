@@ -205,7 +205,7 @@
 }
 
 /* Responsive design */
-@media (max-width: 768px) {
+@include tablet {
   .todo-container {
     margin: $spacing-lg;
     padding: $spacing-xl;
@@ -261,7 +261,7 @@
 
 /* Ant Design RangePicker Override to match input height */
 .custom-date-wrapper .ant-picker {
-  padding: 0.625rem $spacing-md; /* Match FormPopup input padding */
+  padding: $spacing-sm $spacing-md; /* Match FormPopup input padding */
   border-radius: $border-radius-sm;
   border-color: $gray-300;
   box-shadow: none;
