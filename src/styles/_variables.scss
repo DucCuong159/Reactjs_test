@@ -8,10 +8,12 @@ $danger-hover: #dc2626;
 
 $success-color: #10b981;
 $success-light: #d1fae5;
+$success-dark: #059669;
 $success-bg: #f0fdf4;
 
 $warning-color: #f59e0b;
 $warning-light: #fef3c7;
+$warning-dark: #d97706;
 
 $gray-50: #f9fafb;
 $gray-100: #f3f4f6;
@@ -31,11 +33,11 @@ $status-todo-text: $gray-600;
 
 $status-in-progress-border: $warning-color;
 $status-in-progress-bg: $warning-light;
-$status-in-progress-text: #d97706;
+$status-in-progress-text: $warning-dark;
 
 $status-done-border: $success-color;
 $status-done-bg: $success-bg;
-$status-done-text: #059669;
+$status-done-text: $success-dark;
 
 // Spacing
 $spacing-xs: 0.25rem;
