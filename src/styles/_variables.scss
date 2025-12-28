@@ -78,3 +78,14 @@ $shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
 $shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
 $shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
 $shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+// Icon Sizes
+$icon-size-sm: 0.875rem; // 14px
+$icon-size-md: 1rem; // 16px
+$icon-size-lg: 1.25rem; // 20px
+$icon-size-xl: 1.5rem; // 24px
+
+// Z-index
+$z-index-base: 1;
+$z-index-dropdown: 1000;
+$z-index-modal: 2000;

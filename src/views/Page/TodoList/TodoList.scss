@@ -181,10 +181,10 @@
 
 /* Results count */
 .results-count {
-  font-size: 1.125rem;
-  color: #1f2937;
-  margin-bottom: 1rem;
-  font-weight: 700;
+  font-size: $font-size-lg;
+  color: $gray-800;
+  margin-bottom: $spacing-lg;
+  font-weight: $font-weight-bold;
   text-align: left;
 }
 
@@ -208,58 +208,19 @@
 /* Responsive design */
 @media (max-width: 768px) {
   .todo-container {
-    margin: 1rem;
-    padding: 1.5rem;
-  }
-
-  .todo-header {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .todo-title {
-    font-size: 1.5rem;
-    text-align: center;
-  }
-
-  .add-todo-btn {
-    width: 100%;
+    margin: $spacing-lg;
+    padding: $spacing-xl;
   }
 
   .todo-item {
-    padding: 1rem;
-  }
-
-  .todo-main {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .todo-actions {
-    flex-direction: row;
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-  }
-
-  .stats {
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .stat-item {
-    flex: 1 1 40%;
+    padding: $spacing-lg;
   }
 }
 
 @media (max-width: 480px) {
   .todo-container {
-    margin: 0.5rem;
-    padding: 1rem;
-  }
-
-  .todo-title {
-    font-size: 1.25rem;
+    margin: $spacing-sm;
+    padding: $spacing-lg;
   }
 
   .todo-item {
@@ -301,82 +262,37 @@
 
 /* Ant Design RangePicker Override to match input height */
 .custom-date-wrapper .ant-picker {
-  padding: 0.625rem 0.75rem; /* Match FormPopup input padding */
-  border-radius: 6px;
-  border-color: #d1d5db;
+  padding: 0.625rem $spacing-md; /* Match FormPopup input padding */
+  border-radius: $border-radius-sm;
+  border-color: $gray-300;
   box-shadow: none;
   width: 100%;
 
   &:hover,
   &:focus,
   &.ant-picker-focused {
-    border-color: #3b82f6;
+    border-color: $primary-color;
   }
 }
 
-/* View Popup Styles */
-.view-todo-details h3 {
-  word-wrap: break-word;
-  word-break: normal;
-  overflow-wrap: break-word;
-}
-
-.view-popup-header-row {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.view-popup-timeline {
-  color: #6b7280;
-  font-size: 0.9rem;
-}
-
-.view-popup-section {
-  margin-bottom: 1rem;
-  margin-top: 1rem;
-}
-
-.view-popup-content {
-  margin-top: 0.25rem;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  word-break: normal;
-  overflow-wrap: break-word;
-  max-height: 400px;
-  overflow-y: auto;
-}
-
 .icon-calendar {
-  width: 1rem;
-  height: 1rem;
-  vertical-align: middle;
+  @include icon-size($icon-size-md);
 }
 
 .icon-plus {
-  width: 1.2rem;
-  height: 1.2rem;
-  vertical-align: middle;
+  @include icon-size($icon-size-lg);
 }
 
 .icon-edit,
 .icon-delete {
-  width: 1.25rem;
-  height: 1.25rem;
-  vertical-align: middle;
+  @include icon-size($icon-size-lg);
 }
 
 .icon-attachment {
-  width: 1rem;
-  height: 1rem;
-  vertical-align: middle;
+  @include icon-size($icon-size-md);
 }
 
 .icon-drag-handle {
-  width: 1rem;
-  height: 1rem;
-  vertical-align: middle;
+  @include icon-size($icon-size-md);
   opacity: 0.6;
 }
