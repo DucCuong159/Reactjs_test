@@ -28,3 +28,11 @@ export interface TarotTopic {
   id: string;
   title: string;
 }
+
+export interface TarotHistoryItem {
+  id: string;
+  date: string; // ISO string
+  timestamp: number;
+  topic: TarotTopic;
+  cards: CardData[];
+}

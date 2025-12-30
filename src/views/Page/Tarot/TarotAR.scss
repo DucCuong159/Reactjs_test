@@ -392,3 +392,285 @@
     font-size: 0.8rem;
   }
 }
+
+// History Modal
+.history-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(5px);
+}
+
+.history-modal-content {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  animation: modalFadeIn 0.3s ease-out;
+
+  .history-header {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    h2 {
+      margin: 0;
+      color: #d4af37;
+      font-family: "Playfair Display", serif;
+      font-size: 1.5rem;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0 10px;
+
+      &:hover {
+        color: #d4af37;
+      }
+    }
+  }
+
+  .history-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+
+    /* Scrollbar styling */
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba(212, 175, 55, 0.3);
+      border-radius: 3px;
+    }
+  }
+
+  .history-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+
+    &:hover {
+      border-color: rgba(212, 175, 55, 0.5);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .history-item-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+
+      .history-date {
+        color: #aaa;
+      }
+
+      .history-topic {
+        color: #d4af37;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+      }
+    }
+
+    .history-cards-mini {
+      display: flex;
+      justify-content: space-around;
+      gap: 10px;
+
+      .mini-card {
+        text-align: center;
+        width: 30%;
+
+        img {
+          width: 100%;
+          border-radius: 4px;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          margin-bottom: 5px;
+        }
+
+        .mini-label {
+          display: block;
+          font-size: 0.7rem;
+          color: #ccc;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+  }
+
+  .history-empty {
+    padding: 40px;
+    text-align: center;
+    color: #666;
+    font-style: italic;
+  }
+
+  .history-footer {
+    padding: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: right;
+
+    .clear-btn {
+      background: rgba(255, 50, 50, 0.1);
+      color: #ff6b6b;
+      border: 1px solid rgba(255, 50, 50, 0.3);
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+
+      &:hover {
+        background: rgba(255, 50, 50, 0.2);
+      }
+    }
+  }
+}
+
+// Btn to open history
+.history-toggle-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid #d4af37;
+  color: #d4af37;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 1.2rem;
+
+  &:hover {
+    background: #d4af37;
+    color: #000;
+    box-shadow: 0 0 15px #d4af37;
+    transform: scale(1.1);
+  }
+
+  pointer-events: auto;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Confirm Modal
+.confirm-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2100;
+  backdrop-filter: blur(2px);
+  border-radius: 12px;
+}
+
+.confirm-modal {
+  background: #1a1a2e;
+  padding: 30px;
+  border-radius: 8px;
+  border: 1px solid #d4af37;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+  max-width: 400px;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  h3 {
+    margin-top: 0;
+    color: #d4af37;
+    margin-bottom: 15px;
+  }
+
+  p {
+    color: #ccc;
+    margin-bottom: 25px;
+  }
+
+  .confirm-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+
+    button {
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+
+    .btn-cancel {
+      background: transparent;
+      border: 1px solid #666;
+      color: #aaa;
+      &:hover {
+        border-color: #fff;
+        color: #fff;
+      }
+    }
+
+    .btn-confirm {
+      background: #ff4d4d;
+      border: 1px solid #ff4d4d;
+      color: #fff;
+      &:hover {
+        background: #ff3333;
+        box-shadow: 0 0 10px rgba(255, 51, 51, 0.4);
+      }
+    }
+  }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
