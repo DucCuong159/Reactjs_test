@@ -1,7 +1,7 @@
 export interface CardData {
   name: string;
   url: string;
-  meaning: string;
+  topicMeanings?: Record<string, string>;
 }
 
 export interface TarotConfig {
@@ -23,4 +23,8 @@ export interface TarotConfig {
     startZ: number;
     arcHeight: number;
   };
+}
+export interface TarotTopic {
+  id: string;
+  title: string;
 }
