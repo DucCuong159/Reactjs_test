@@ -463,9 +463,18 @@ export class TarotSceneManager {
 
   public reset() {
     this.isGameActive = false;
-    this.inspectingCard = null;
-    this.hoveredCard = null;
+
+    // Return picked cards (which were attached to scene) back to the group
+    if (this.inspectingCard) {
+      this.cardGroup.add(this.inspectingCard);
+      this.inspectingCard = null;
+    }
+    this.storedCards.forEach((card) => {
+      this.cardGroup.add(card);
+    });
     this.storedCards = [];
+
+    this.hoveredCard = null;
 
     // Clear explosions
     this.explosions.forEach((ex) => {
@@ -507,22 +516,23 @@ export class TarotSceneManager {
 
       // Reset Visuals
       new this.TWEEN.Tween(card.position)
-        .to({ x, y: y + arcOffset, z: layout.startZ }, 800)
+        .to({ x, y: y + arcOffset, z: layout.startZ }, 500)
         .easing(this.TWEEN.Easing.Back.Out)
         .start();
 
       new this.TWEEN.Tween(card.rotation)
-        .to({ x: 0, y: 0, z: 0 }, 800)
+        .to({ x: 0, y: 0, z: 0 }, 500)
         .easing(this.TWEEN.Easing.Quadratic.Out)
         .start();
 
-      new this.TWEEN.Tween(card.scale).to({ x: 1, y: 1, z: 1 }, 800).start();
+      new this.TWEEN.Tween(card.scale).to({ x: 1, y: 1, z: 1 }, 500).start();
 
       const materials = card.material as THREE_TYPES.MeshStandardMaterial[];
       materials.forEach((m) => {
         if (m.transparent) m.opacity = 1;
         if (m.emissive) m.emissive.setHex(0x000000);
       });
+      card.visible = true; // Ensure hidden cards are shown again
     });
   }
 
@@ -565,30 +575,33 @@ export class TarotSceneManager {
 
     if (this.isGameActive) {
       const isInspecting = !!this.inspectingCard;
-      this.cardGroup.children.forEach(
-        (obj: THREE_TYPES.Object3D, i: number) => {
-          const c = obj as THREE_TYPES.Mesh;
-          if (!c.userData.isPicked && c !== this.hoveredCard) {
-            const layout = CONFIG.spreadLayout!;
-            const totalRows = Math.ceil(TAROT_DATA.length / layout.cardsPerRow);
-            const row = Math.floor(i / layout.cardsPerRow);
-            const col = i % layout.cardsPerRow;
-            const totalHeight = (totalRows - 1) * layout.rowSpacing;
-            const baseY = -row * layout.rowSpacing + totalHeight / 2;
-            const normalizedCol = col / (layout.cardsPerRow - 1) - 0.5;
-            const arcOffset =
-              layout.arcHeight * (1 - 4 * normalizedCol * normalizedCol);
-            c.position.y =
-              baseY + arcOffset + Math.sin(time * 0.001 + i * 0.1) * 0.05;
+      this.cardGroup.children.forEach((obj: THREE_TYPES.Object3D) => {
+        const c = obj as THREE_TYPES.Mesh;
+        // Use the stable ID stored in userData, not the loop index which changes when cards are picked/removed
+        const id = c.userData.id;
 
-            const targetOpacity = isInspecting ? 0.2 : 1.0;
-            (c.material as THREE_TYPES.MeshStandardMaterial[]).forEach((m) => {
-              if (m.transparent === undefined) m.transparent = true;
-              m.opacity += (targetOpacity - m.opacity) * 0.1;
-            });
-          }
+        if (!c.userData.isPicked && c !== this.hoveredCard) {
+          const layout = CONFIG.spreadLayout!;
+          const totalRows = Math.ceil(TAROT_DATA.length / layout.cardsPerRow);
+          const row = Math.floor(id / layout.cardsPerRow);
+          const col = id % layout.cardsPerRow;
+          const totalHeight = (totalRows - 1) * layout.rowSpacing;
+          const baseY = -row * layout.rowSpacing + totalHeight / 2;
+          const normalizedCol = col / (layout.cardsPerRow - 1) - 0.5;
+          const arcOffset =
+            layout.arcHeight * (1 - 4 * normalizedCol * normalizedCol);
+          c.position.y =
+            baseY + arcOffset + Math.sin(time * 0.001 + id * 0.1) * 0.05;
+
+          const targetOpacity = isInspecting ? 0.2 : 1.0;
+          (c.material as THREE_TYPES.MeshStandardMaterial[]).forEach((m) => {
+            if (m.transparent === undefined) m.transparent = true;
+            // Smoothly transition opacity
+            m.opacity += (targetOpacity - m.opacity) * 0.1;
+          });
+          c.visible = true; // Ensure they stay visible during gameplay
         }
-      );
+      });
     }
     if (this.starFieldMesh) {
       this.starFieldMesh.rotation.y = time * 0.00005;
