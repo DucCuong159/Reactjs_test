@@ -129,7 +129,7 @@ function initTarotApp(container: HTMLDivElement, onReady: () => void) {
   let textureLoader: THREE_TYPES.TextureLoader;
   let raycaster: THREE_TYPES.Raycaster;
   let mouse: THREE_TYPES.Vector2;
-  let starFieldMesh: THREE_TYPES.Points;
+  let starFieldMesh: THREE_TYPES.InstancedMesh;
   let explosions: Explosion[] = [];
   let storedCards: THREE_TYPES.Mesh[] = [];
   let inspectingCard: THREE_TYPES.Mesh | null = null;
@@ -219,43 +219,40 @@ function initTarotApp(container: HTMLDivElement, onReady: () => void) {
   }
 
   function createBackgroundStars() {
-    const geo = new THREE.BufferGeometry();
-    const positions: number[] = [];
-    const sizes: number[] = [];
-    for (let i = 0; i < SCENE_CONFIG.stars.count; i++) {
-      positions.push(
+    const count = SCENE_CONFIG.stars.count;
+
+    // TỐI ƯU CẤP 3: Sử dụng InstancedMesh để vẽ 1200 vật thể 3D chỉ với 1 Draw Call
+    // Thay vì dùng Point (2D), ta dùng Box (3D) để trông xịn hơn mà vẫn cực nhẹ
+    const geo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+    const mat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.8,
+      blending: THREE.AdditiveBlending,
+    });
+
+    starFieldMesh = new THREE.InstancedMesh(geo, mat, count);
+
+    const dummy = new THREE.Object3D();
+    for (let i = 0; i < count; i++) {
+      dummy.position.set(
         (Math.random() - 0.5) * 60,
         (Math.random() - 0.5) * 40,
         (Math.random() - 0.5) * 50 - 10
       );
-      sizes.push(Math.random() * 0.5 + 0.1);
+      dummy.rotation.set(
+        Math.random() * Math.PI,
+        Math.random() * Math.PI,
+        Math.random() * Math.PI
+      );
+      const scale = Math.random() * 0.5 + 0.1;
+      dummy.scale.set(scale, scale, scale);
+
+      // Tính toán ma trận vị trí cho từng bản sao (Instance)
+      dummy.updateMatrix();
+      starFieldMesh.setMatrixAt(i, dummy.matrix);
     }
-    geo.setAttribute(
-      "position",
-      new THREE.Float32BufferAttribute(positions, 3)
-    );
-    geo.setAttribute("size", new THREE.Float32BufferAttribute(sizes, 1));
 
-    const sprite = textureLoader.load(
-      require("../../../assets/png/sparkle.png"),
-      undefined,
-      undefined,
-      (err: unknown) => {
-        console.warn("Failed to load sparkle texture", err);
-      }
-    );
-
-    const mat = new THREE.PointsMaterial({
-      size: SCENE_CONFIG.stars.size,
-      map: sprite,
-      transparent: true,
-      opacity: SCENE_CONFIG.stars.opacity,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      color: 0xffffff,
-    });
-
-    starFieldMesh = new THREE.Points(geo, mat);
     scene.add(starFieldMesh);
   }
 
@@ -576,11 +573,21 @@ function initTarotApp(container: HTMLDivElement, onReady: () => void) {
           .to({ z: CONFIG.spreadLayout!.startZ + 0.6 }, 300)
           .easing(TWEEN.Easing.Quadratic.Out)
           .start();
-        (foundHover.material as THREE_TYPES.MeshStandardMaterial[]).forEach(
-          (m) => {
-            if (m.emissive) m.emissive.setHex(0x333333);
-          }
-        );
+
+        // Nháy chớp tắt 1 lần khi vừa chạm vào
+        const matFront = (
+          foundHover.material as THREE_TYPES.MeshStandardMaterial[]
+        )[5];
+        if (matFront && matFront.emissive) {
+          new TWEEN.Tween({ brightness: 0 })
+            .to({ brightness: 0.5 }, 150)
+            .yoyo(true)
+            .repeat(1)
+            .onUpdate((obj: { brightness: number }) => {
+              matFront.emissive.setScalar(obj.brightness);
+            })
+            .start();
+        }
       }
       hoveredCard = foundHover;
     }
@@ -659,8 +666,7 @@ function initTarotApp(container: HTMLDivElement, onReady: () => void) {
 
     if (starFieldMesh) {
       starFieldMesh.rotation.y = time * 0.00005;
-      const mat = starFieldMesh.material as THREE_TYPES.PointsMaterial;
-      mat.size = Math.sin(time * 0.002) * 0.1 + 0.9;
+      starFieldMesh.rotation.x = time * 0.00002;
     }
     renderer.render(scene, camera);
   }
