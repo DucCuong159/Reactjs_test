@@ -1,0 +1,265 @@
+.tarot-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #050505;
+  overflow: hidden;
+  font-family: "Outfit", sans-serif;
+  color: #fff;
+}
+
+#canvas-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+#ui-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+#guide-text {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 4px;
+  font-weight: 300;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  bottom: 5%;
+  animation: pulseGuide 3s infinite ease-in-out;
+}
+
+@keyframes pulseGuide {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateY(-5px);
+  }
+}
+
+#counter {
+  position: absolute;
+  top: 40px;
+  right: 50px;
+  font-size: 1rem;
+  color: #d4af37;
+  font-weight: 600;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 8px 20px;
+  border-radius: 40px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  letter-spacing: 2px;
+}
+
+#loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 1s ease;
+}
+
+.loader-content {
+  text-align: center;
+}
+
+.loader-icon {
+  font-size: 3rem;
+  color: #fff;
+  animation: rotateIcon 4s infinite linear;
+  text-shadow: 0 0 20px #fff;
+}
+
+@keyframes rotateIcon {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loader-text {
+  margin-top: 20px;
+  letter-spacing: 6px;
+  font-size: 0.7rem;
+  color: #888;
+  font-weight: 300;
+}
+
+#result-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 85%;
+  max-width: 1000px;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: rgba(5, 5, 5, 0.85);
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 60px;
+  display: none;
+  pointer-events: auto;
+  box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8);
+  border-radius: 8px;
+  z-index: 50;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.modal-header h2 {
+  font-family: "Playfair Display", serif;
+  font-weight: 700;
+  font-size: 2.4rem;
+  letter-spacing: 2px;
+  margin: 0;
+  color: #fff;
+}
+
+.sparkle {
+  color: #d4af37;
+  font-size: 1.5rem;
+  animation: flicker 2s infinite;
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+}
+
+.reading-section {
+  margin-bottom: 50px;
+  opacity: 0;
+  animation: revealSection 0.8s forwards;
+}
+
+@for $i from 1 through 3 {
+  .reading-section:nth-child(#{$i}) {
+    animation-delay: #{$i * 0.3}s;
+  }
+}
+
+@keyframes revealSection {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reading-label {
+  color: #d4af37;
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.reading-body {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.reading-img {
+  width: 140px;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: transform 0.5s ease;
+}
+
+.reading-img:hover {
+  transform: scale(1.05) rotate(2deg);
+}
+
+.reading-content h3 {
+  font-family: "Playfair Display", serif;
+  margin: 0 0 15px 0;
+  font-size: 1.8rem;
+  color: #fff;
+}
+
+.reading-desc {
+  color: #aaa;
+  line-height: 1.8;
+  font-size: 1.1rem;
+  font-weight: 300;
+  max-width: 600px;
+}
+
+.restart-btn {
+  display: block;
+  margin: 60px auto 0;
+  padding: 18px 60px;
+  background: transparent;
+  border: 1px solid #d4af37;
+  color: #d4af37;
+  cursor: pointer;
+  font-family: "Outfit", sans-serif;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  transition: all 0.4s ease;
+  border-radius: 2px;
+}
+
+.restart-btn:hover {
+  background: #d4af37;
+  color: #000;
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+}
+
+#result-modal::-webkit-scrollbar {
+  width: 4px;
+}
+
+#result-modal::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 10px;
+}
