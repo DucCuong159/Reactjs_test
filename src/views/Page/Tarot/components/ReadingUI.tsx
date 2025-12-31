@@ -66,7 +66,7 @@ export const ReadingUI: React.FC<ReadingUIProps> = ({
           percent={percent}
           showInfo={false}
           strokeColor={{ "0%": "#d4af37", "100%": "#fcd34d" }}
-          trailColor="rgba(255,255,255,0.1)"
+          railColor="rgba(255,255,255,0.1)"
         />
         <div
           style={{

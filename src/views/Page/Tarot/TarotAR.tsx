@@ -79,7 +79,7 @@ const TarotAR: React.FC = () => {
           ),
           loadScript(
             "https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js",
-            "sha512-lIKG1kC5TMb1Kf4D6YpJWLCJpfL4RAzfRLH0xrCYSZCZoxX8MhogmKG8Pg/JfTqXDJUmOqRd+jVTA+zIOA7WXw=="
+            "sha512-lIKG1kC5TMb1Zx32vdz1n31YJMZRknVY20U9MJ28hD3y2c0OKN0Ce5NhJji78v8zX5UOSsm+MTBOcJt7yMBnSg=="
           ),
         ]);
 
