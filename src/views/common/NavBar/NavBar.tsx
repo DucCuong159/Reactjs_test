@@ -1,11 +1,11 @@
 import {
   CheckCircleOutlined,
   HomeOutlined,
+  RocketOutlined,
   StarOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import React from "react";
-import { FaReact } from "react-icons/fa";
 import { useHistory, useLocation } from "react-router-dom";
 import "./NavBar.scss";
 
@@ -49,7 +49,7 @@ export const NavBar: React.FC = () => {
   return (
     <div className="navbar-container">
       <div className="navbar-header">
-        {(FaReact as any)({ className: "navbar-icon" })}
+        <RocketOutlined className="navbar-icon" />
         <span className="navbar-title">React Website</span>
       </div>
       <Menu
