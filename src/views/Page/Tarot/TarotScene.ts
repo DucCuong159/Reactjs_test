@@ -42,6 +42,9 @@ export class TarotSceneManager {
   private particleTexture!: THREE_TYPES.Texture;
   private explosionMaterial!: THREE_TYPES.PointsMaterial;
 
+  // Track scene-specific tweens for proper cleanup
+  private activeTweens: any[] = [];
+
   // Bound event handlers for proper cleanup
   private onMouseDownBound: (event: MouseEvent) => void;
   private onMouseMoveBound: (event: MouseEvent) => void;
@@ -163,6 +166,13 @@ export class TarotSceneManager {
     const tex = new this.THREE.Texture(canvas);
     tex.needsUpdate = true;
     return tex;
+  }
+
+  // Helper method to create and track tweens for proper cleanup
+  private createTween(target: any) {
+    const tween = new this.TWEEN.Tween(target);
+    this.activeTweens.push(tween);
+    return tween;
   }
 
   private createBackgroundStars() {
@@ -374,18 +384,18 @@ export class TarotSceneManager {
 
     card.renderOrder = 10; // Bring to front while inspecting
 
-    new this.TWEEN.Tween(card.position)
+    this.createTween(card.position)
       .to(CONFIG.inspectPos, 1200)
       .easing(this.TWEEN.Easing.Cubic.InOut)
       .start();
 
-    new this.TWEEN.Tween(card.rotation)
+    this.createTween(card.rotation)
       .to({ x: 0, y: Math.PI, z: 0 }, 1200)
       .easing(this.TWEEN.Easing.Exponential.InOut)
       .start();
 
     const targetScale = CONFIG.inspectScale;
-    new this.TWEEN.Tween(card.scale)
+    this.createTween(card.scale)
       .to({ x: targetScale, y: targetScale, z: targetScale }, 1200)
       .easing(this.TWEEN.Easing.Back.Out)
       .onComplete(() => {
@@ -428,11 +438,11 @@ export class TarotSceneManager {
     this.storedCards.forEach((c, i) => {
       const pos = this.getSafeVerticalLeftPosition(i);
 
-      new this.TWEEN.Tween(c.position)
+      this.createTween(c.position)
         .to({ x: pos.x, y: pos.y, z: pos.z }, 800)
         .easing(this.TWEEN.Easing.Exponential.Out)
         .start();
-      new this.TWEEN.Tween(c.scale)
+      this.createTween(c.scale)
         .to({ x: scale, y: scale, z: scale }, 800)
         .easing(this.TWEEN.Easing.Exponential.Out)
         .start();
@@ -468,7 +478,7 @@ export class TarotSceneManager {
 
     if (foundHover !== this.hoveredCard) {
       if (this.hoveredCard) {
-        new this.TWEEN.Tween(this.hoveredCard.position)
+        this.createTween(this.hoveredCard.position)
           .to({ z: CONFIG.spreadLayout!.startZ }, 300)
           .easing(this.TWEEN.Easing.Quadratic.Out)
           .start();
@@ -479,7 +489,7 @@ export class TarotSceneManager {
         });
       }
       if (foundHover) {
-        new this.TWEEN.Tween(foundHover.position)
+        this.createTween(foundHover.position)
           .to({ z: CONFIG.spreadLayout!.startZ + 0.6 }, 300)
           .easing(this.TWEEN.Easing.Quadratic.Out)
           .start();
@@ -487,7 +497,7 @@ export class TarotSceneManager {
           foundHover.material as THREE_TYPES.MeshStandardMaterial[]
         )[5];
         if (matFront && matFront.emissive) {
-          new this.TWEEN.Tween({ brightness: 0 })
+          this.createTween({ brightness: 0 })
             .to({ brightness: 0.5 }, 150)
             .yoyo(true)
             .repeat(1)
@@ -539,8 +549,13 @@ export class TarotSceneManager {
     });
     this.explosions = [];
 
-    // Stop all running Tweens to prevent conflicts
-    this.TWEEN.removeAll();
+    // Stop only this scene's tweens to prevent conflicts
+    this.activeTweens.forEach((tween) => {
+      if (tween && tween.stop) {
+        tween.stop();
+      }
+    });
+    this.activeTweens = [];
 
     // Shuffle the card meshes directly to maintain texture usage without reloading
     const cards = [...this.cardGroup.children] as THREE_TYPES.Mesh[];
@@ -571,17 +586,17 @@ export class TarotSceneManager {
       card.userData.id = i;
 
       // Reset Visuals
-      new this.TWEEN.Tween(card.position)
+      this.createTween(card.position)
         .to({ x, y: y + arcOffset, z: layout.startZ }, 500)
         .easing(this.TWEEN.Easing.Back.Out)
         .start();
 
-      new this.TWEEN.Tween(card.rotation)
+      this.createTween(card.rotation)
         .to({ x: 0, y: 0, z: 0 }, 500)
         .easing(this.TWEEN.Easing.Quadratic.Out)
         .start();
 
-      new this.TWEEN.Tween(card.scale).to({ x: 1, y: 1, z: 1 }, 500).start();
+      this.createTween(card.scale).to({ x: 1, y: 1, z: 1 }, 500).start();
 
       const materials = card.material as THREE_TYPES.MeshStandardMaterial[];
       materials.forEach((m) => {
