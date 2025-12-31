@@ -55,12 +55,15 @@ const TarotAR: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    const loadScript = (src: string): Promise<void> => {
+    const loadScript = (src: string, integrity?: string): Promise<void> => {
       return new Promise((resolve, reject) => {
         if (document.querySelector(`script[src="${src}"]`)) return resolve();
         const script = document.createElement("script");
         script.src = src;
         script.crossOrigin = "anonymous";
+        if (integrity) {
+          script.integrity = integrity;
+        }
         script.onload = () => resolve();
         script.onerror = reject;
         document.head.appendChild(script);
@@ -71,10 +74,12 @@ const TarotAR: React.FC = () => {
       try {
         await Promise.all([
           loadScript(
-            "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+            "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js",
+            "sha512-dLxUelApnYxpLt6K2iomGngnHO83iUvZytA3YjDUCjT0HDOHKXnVYdf3hU4JjM8uEhxf9nD1/ey98U3t2vZ0qQ=="
           ),
           loadScript(
-            "https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"
+            "https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js",
+            "sha512-lIKG1kC5TMb1Kf4D6YpJWLCJpfL4RAzfRLH0xrCYSZCZoxX8MhogmKG8Pg/JfTqXDJUmOqRd+jVTA+zIOA7WXw=="
           ),
         ]);
 
@@ -93,6 +98,7 @@ const TarotAR: React.FC = () => {
         }
       } catch (error) {
         console.error("Failed to initialize Tarot Scene:", error);
+        dispatch(setLoading(false)); // Clear loading state on error
       }
     };
 
