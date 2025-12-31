@@ -21,7 +21,7 @@ export const TodoListHeader: React.FC = () => {
   const sortDirection = useAppSelector((state) => state.todos.sortDirection);
 
   return (
-    <Space direction="vertical" size="large" className="todo-list-header">
+    <Flex vertical gap="large" className="todo-list-header">
       {/* Title and Add Button */}
       <Flex justify="space-between" align="center">
         <h1 className="todo-list-title">📝 Todo List</h1>
@@ -72,7 +72,11 @@ export const TodoListHeader: React.FC = () => {
           {sortBy !== "none" && (
             <Button
               onClick={() => dispatch(setSortBy(sortBy))}
-              aria-label={sortDirection === "asc" ? "Sort ascending, click to reverse" : "Sort descending, click to reverse"}
+              aria-label={
+                sortDirection === "asc"
+                  ? "Sort ascending, click to reverse"
+                  : "Sort descending, click to reverse"
+              }
               title={
                 sortDirection === "asc"
                   ? "Ascending (click to reverse)"
@@ -84,6 +88,6 @@ export const TodoListHeader: React.FC = () => {
           )}
         </Space.Compact>
       </Flex>
-    </Space>
+    </Flex>
   );
 };
