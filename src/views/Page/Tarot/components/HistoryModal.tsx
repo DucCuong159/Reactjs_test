@@ -30,7 +30,7 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
           }}
         >
           <HistoryOutlined style={{ marginRight: 8 }} />
-          Nhật Ký Tiên Tri
+          Prophecy Journal
         </span>
       }
       open={isOpen}
@@ -38,15 +38,15 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
       footer={
         history.length > 0 ? (
           <Popconfirm
-            title="Xác nhận xóa"
-            description="Bạn có chắc chắn muốn xóa toàn bộ nhật ký bói bài không?"
+            title="Confirm Deletion"
+            description="Are you sure you want to delete all history items?"
             onConfirm={onClear}
-            okText="Đồng ý Xóa"
-            cancelText="Hủy bỏ"
+            okText="Delete All"
+            cancelText="Cancel"
             okButtonProps={{ danger: true }}
           >
             <Button danger icon={<DeleteOutlined />}>
-              Xóa Lịch Sử
+              Clear History
             </Button>
           </Popconfirm>
         ) : null
@@ -64,7 +64,7 @@ export const HistoryModal: React.FC<HistoryModalProps> = ({
         <Empty
           description={
             <Text style={{ color: "rgba(255,255,255,0.6)" }}>
-              Chưa có lần trải bài nào được ghi lại.
+              No tarot readings have been recorded yet.
             </Text>
           }
           image={Empty.PRESENTED_IMAGE_SIMPLE}

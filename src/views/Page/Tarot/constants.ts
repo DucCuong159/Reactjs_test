@@ -1305,7 +1305,7 @@ export const TAROT_CONFIG: TarotConfig = {
   },
 };
 
-export const READING_CONTEXTS = ["QUÁ KHỨ", "HIỆN TẠI", "TƯƠNG LAI"];
+export const READING_CONTEXTS = ["PAST", "PRESENT", "FUTURE"];
 
 export const SCENE_CONFIG = {
   fog: { color: 0x050505, density: 0.02 },
@@ -1320,26 +1320,26 @@ export const SCENE_CONFIG = {
 export const TAROT_TOPICS: TarotTopic[] = [
   {
     id: "tinh-duyen",
-    title: "Tình Duyên",
+    title: "Romance",
   },
   {
     id: "hoc-tap",
-    title: "Học Tập",
+    title: "Education",
   },
   {
     id: "cong-viec",
-    title: "Công Việc",
+    title: "Career",
   },
   {
     id: "tai-chinh",
-    title: "Tài Chính",
+    title: "Finance",
   },
   {
     id: "suc-khoe",
-    title: "Sức Khỏe",
+    title: "Health",
   },
   {
     id: "gia-dinh",
-    title: "Gia Đình",
+    title: "Family",
   },
 ];

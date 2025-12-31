@@ -9,7 +9,7 @@ interface TopicOverlayProps {
 export const TopicOverlay: React.FC<TopicOverlayProps> = ({ onSelect }) => {
   return (
     <div className="overlay-menu">
-      <h1 className="menu-title">Chọn Chủ Đề Bói Bài</h1>
+      <h1 className="menu-title">Select a Tarot Topic</h1>
       <div className="topic-grid">
         {TAROT_TOPICS.map((topic) => (
           <div

@@ -60,7 +60,7 @@ export const ResultModal: React.FC<ResultModalProps> = ({
             "image/png": blob,
           }),
         ]);
-        message.success("✅ Đã copy ảnh vào clipboard!");
+        message.success("✅ Image copied to clipboard!");
       } catch (clipboardError) {
         console.error("Clipboard error:", clipboardError);
         // Fallback: Download image
@@ -69,9 +69,7 @@ export const ResultModal: React.FC<ResultModalProps> = ({
         link.download = "tarot-reading.png";
         link.click();
         URL.revokeObjectURL(link.href);
-        message.info(
-          "📥 Ảnh đã được tải xuống (trình duyệt không hỗ trợ copy)"
-        );
+        message.info("📥 Image downloaded (clipboard unsupported)");
       }
       setIsSharing(false);
     } catch (err) {
@@ -97,7 +95,7 @@ export const ResultModal: React.FC<ResultModalProps> = ({
         <button
           onClick={handleCopyImage}
           disabled={isSharing}
-          title="Copy ảnh"
+          title="Copy Image"
           style={{
             background: "transparent",
             border: "1px solid #d4af37",
@@ -116,7 +114,7 @@ export const ResultModal: React.FC<ResultModalProps> = ({
         </button>
         <button
           onClick={onRestart}
-          title="Trải bài mới / Đóng"
+          title="New Reading / Close"
           style={{
             background: "transparent",
             border: "1px solid #d4af37",
@@ -139,12 +137,12 @@ export const ResultModal: React.FC<ResultModalProps> = ({
         <div className="modal-header-row">
           <div className="header-title">
             <span className="sparkle">✦</span>
-            <h2>Lời Tiên Tri</h2>
+            <h2>The Prophecy</h2>
             <span className="sparkle">✦</span>
           </div>
 
           <div className="header-topic">
-            <strong>Chủ đề:</strong> {selectedTopic?.title}
+            <strong>Topic:</strong> {selectedTopic?.title}
           </div>
         </div>
 
@@ -166,7 +164,7 @@ export const ResultModal: React.FC<ResultModalProps> = ({
                     card.topicMeanings &&
                     card.topicMeanings[selectedTopic.id]
                       ? card.topicMeanings[selectedTopic.id]
-                      : "Hãy chọn một chủ đề để xem lời giải."}
+                      : "Please select a topic to view the reading."}
                   </div>
                 </div>
               </div>

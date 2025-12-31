@@ -42,10 +42,10 @@ export const ReadingUI: React.FC<ReadingUIProps> = ({
         }}
       >
         {pickedCount === 3
-          ? "Định mệnh đã an bài..."
+          ? "Destiny is set..."
           : selectedTopic?.title
-          ? `Đang xem: ${selectedTopic.title}`
-          : "Chọn 3 lá bài để xem định mệnh"}
+          ? `Consulting: ${selectedTopic.title}`
+          : "Select 3 cards to reveal your fate"}
       </Title>
 
       {pickedCount < 3 && (
@@ -57,7 +57,7 @@ export const ReadingUI: React.FC<ReadingUIProps> = ({
             fontSize: "0.8rem",
           }}
         >
-          Nhấp vào các lá bài đang bay để chọn
+          Click on the floating cards to select
         </Text>
       )}
 

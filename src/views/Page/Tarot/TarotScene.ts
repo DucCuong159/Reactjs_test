@@ -200,9 +200,25 @@ export class TarotSceneManager {
 
     TAROT_DATA.forEach((data: CardData, i: number) => {
       const frontTex = this.textureLoader.load(data.url);
-      const matFront = new this.THREE.MeshStandardMaterial({ map: frontTex });
-      const materials = [matEdge, matEdge, matEdge, matEdge, matBack, matFront];
+      const matFront = new this.THREE.MeshStandardMaterial({
+        map: frontTex,
+        transparent: true,
+      });
+      const matBackUnique = matBack.clone() as THREE_TYPES.MeshStandardMaterial;
+      matBackUnique.transparent = true;
+      const matEdgeUnique = matEdge.clone() as THREE_TYPES.MeshStandardMaterial;
+      matEdgeUnique.transparent = true;
+
+      const materials = [
+        matEdgeUnique,
+        matEdgeUnique,
+        matEdgeUnique,
+        matEdgeUnique,
+        matBackUnique,
+        matFront,
+      ];
       const card = new this.THREE.Mesh(geo, materials);
+      card.renderOrder = 0; // Deck level
 
       const layout = CONFIG.spreadLayout!;
       const totalRows = Math.ceil(TAROT_DATA.length / layout.cardsPerRow);
@@ -312,6 +328,8 @@ export class TarotSceneManager {
     this.inspectingCard = card;
     this.scene.attach(card);
 
+    card.renderOrder = 10; // Bring to front while inspecting
+
     new this.TWEEN.Tween(card.position)
       .to(CONFIG.inspectPos, 1200)
       .easing(this.TWEEN.Easing.Cubic.InOut)
@@ -355,31 +373,24 @@ export class TarotSceneManager {
     const card = this.inspectingCard;
     this.storedCards.push(card);
     this.inspectingCard = null;
-    const index = this.storedCards.length - 1;
-    const pos = this.getSafeVerticalLeftPosition(index);
-    const scale = CONFIG.storageScale;
+    card.renderOrder = 20; // Stored cards on top
 
-    new this.TWEEN.Tween(card.position)
-      .to({ x: pos.x, y: pos.y, z: pos.z }, 800)
-      .easing(this.TWEEN.Easing.Exponential.Out)
-      .start();
-    new this.TWEEN.Tween(card.scale)
-      .to({ x: scale, y: scale, z: scale }, 800)
-      .start();
-
-    this.updatePhase();
     this.repositionStoredCards();
+    this.updatePhase();
   }
 
   private repositionStoredCards() {
     const scale = CONFIG.storageScale;
     this.storedCards.forEach((c, i) => {
       const pos = this.getSafeVerticalLeftPosition(i);
+
       new this.TWEEN.Tween(c.position)
-        .to({ x: pos.x, y: pos.y, z: pos.z }, 500)
+        .to({ x: pos.x, y: pos.y, z: pos.z }, 800)
+        .easing(this.TWEEN.Easing.Exponential.Out)
         .start();
       new this.TWEEN.Tween(c.scale)
-        .to({ x: scale, y: scale, z: scale }, 500)
+        .to({ x: scale, y: scale, z: scale }, 800)
+        .easing(this.TWEEN.Easing.Exponential.Out)
         .start();
     });
   }

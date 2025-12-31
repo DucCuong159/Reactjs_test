@@ -148,7 +148,7 @@ const TarotAR: React.FC = () => {
       {/* UI Overlay Layer */}
       <div id="ui-layer">
         {/* Sound Toggle Button */}
-        <Tooltip title={isMuted ? "Bật âm thanh" : "Tắt âm thanh"}>
+        <Tooltip title={isMuted ? "Unmute" : "Mute"}>
           <Button
             className="sound-toggle-btn"
             shape="circle"
@@ -160,7 +160,7 @@ const TarotAR: React.FC = () => {
         {step === TarotStep.TOPIC && (
           <>
             <TopicOverlay onSelect={handleTopicSelect} />
-            <Tooltip title="Xem Lịch Sử">
+            <Tooltip title="View History">
               <Button
                 className="history-toggle-btn"
                 shape="circle"
