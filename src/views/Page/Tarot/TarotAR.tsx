@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from "react";
-import { Button, Tooltip } from "antd";
 import {
   HistoryOutlined,
-  SoundOutlined,
   MutedOutlined,
+  SoundOutlined,
 } from "@ant-design/icons";
+import { Button, Tooltip } from "antd";
+import React, { useEffect, useRef } from "react";
 import { RootState } from "../../../store";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import {
@@ -27,13 +27,6 @@ import { ReadingUI } from "./components/ReadingUI";
 import { ResultModal } from "./components/ResultModal";
 import { TopicOverlay } from "./components/TopicOverlay";
 import { soundManager } from "./utils/SoundManager";
-
-// Load Google Fonts
-const fontLink = document.createElement("link");
-fontLink.href =
-  "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap";
-fontLink.rel = "stylesheet";
-document.head.appendChild(fontLink);
 
 const TarotAR: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
