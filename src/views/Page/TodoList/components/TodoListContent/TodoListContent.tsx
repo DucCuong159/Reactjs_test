@@ -1,4 +1,4 @@
-import { Card, Empty, List, Pagination, Space, Typography } from "antd";
+import { Card, Col, Empty, Flex, Pagination, Row, Typography } from "antd";
 import { useHistory } from "react-router-dom";
 import { ReactComponent as AttachmentIcon } from "../../../../../assets/svg/attachment.svg";
 import { ReactComponent as CalendarIcon } from "../../../../../assets/svg/calendar.svg";
@@ -47,17 +47,15 @@ export const TodoListContent: React.FC<TodoListContentProps> = ({
       </div>
 
       {/* Todo Grid - 2 columns with 1rem gap */}
-      <List
-        grid={{ gutter: 16, column: 2 }}
-        dataSource={paginatedTodos}
-        renderItem={(todo) => (
-          <List.Item>
+      <Row gutter={[16, 16]}>
+        {paginatedTodos.map((todo) => (
+          <Col span={12} key={todo.id}>
             <Card
               hoverable
               onClick={() => handleTodoClick(todo.id)}
               className={`todo-item-card status-${todo.status}`}
             >
-              <Space direction="vertical" size="small" className="card-content">
+              <Flex vertical gap="small" className="card-content">
                 {/* Title and Status */}
                 <div className="card-header">
                   <Title level={4} className="todo-name" ellipsis>
@@ -78,7 +76,7 @@ export const TodoListContent: React.FC<TodoListContentProps> = ({
                 </Paragraph>
 
                 {/* Metadata (Date & Attachments) */}
-                <Space size="large" className="todo-meta">
+                <Flex gap="large" className="todo-meta">
                   {(todo.startDate || todo.endDate) && (
                     <Text type="secondary" className="todo-date">
                       <CalendarIcon className="icon-calendar" />
@@ -94,12 +92,12 @@ export const TodoListContent: React.FC<TodoListContentProps> = ({
                       {todo.attachments.length} file(s)
                     </Text>
                   )}
-                </Space>
-              </Space>
+                </Flex>
+              </Flex>
             </Card>
-          </List.Item>
-        )}
-      />
+          </Col>
+        ))}
+      </Row>
 
       {/* Pagination */}
       {filteredAndSortedTodos.length > 0 && (
