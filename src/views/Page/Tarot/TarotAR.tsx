@@ -61,14 +61,6 @@ const TarotAR: React.FC = () => {
     dispatch(resetGame());
   }, [dispatch]);
 
-  // Use a ref to keep track of selected topic for the closure in setupScene
-  const selectedTopicRef = useRef<TarotTopic | null>(null);
-
-  // Sync ref with redux state
-  useEffect(() => {
-    selectedTopicRef.current = selectedTopic;
-  }, [selectedTopic]);
-
   useEffect(() => {
     const loadScript = (src: string): Promise<void> => {
       return new Promise((resolve, reject) => {
