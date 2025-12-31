@@ -42,11 +42,21 @@ export class TarotSceneManager {
   private particleTexture!: THREE_TYPES.Texture;
   private explosionMaterial!: THREE_TYPES.PointsMaterial;
 
+  // Bound event handlers for proper cleanup
+  private onMouseDownBound: (event: MouseEvent) => void;
+  private onMouseMoveBound: (event: MouseEvent) => void;
+  private onResizeBound: () => void;
+
   constructor(container: HTMLDivElement, callbacks: TarotSceneCallbacks) {
     this.container = container;
     this.callbacks = callbacks;
     this.THREE = (window as any).THREE;
     this.TWEEN = (window as any).TWEEN;
+
+    // Bind event handlers once
+    this.onMouseDownBound = this.onMouseDown.bind(this);
+    this.onMouseMoveBound = this.onMouseMove.bind(this);
+    this.onResizeBound = this.onResize.bind(this);
 
     this.init();
     this.animate(0);
@@ -112,13 +122,13 @@ export class TarotSceneManager {
     this.mouse = new this.THREE.Vector2();
     this.renderer.domElement.addEventListener(
       "mousedown",
-      this.onMouseDown.bind(this)
+      this.onMouseDownBound
     );
     this.renderer.domElement.addEventListener(
       "mousemove",
-      this.onMouseMove.bind(this)
+      this.onMouseMoveBound
     );
-    window.addEventListener("resize", this.onResize.bind(this));
+    window.addEventListener("resize", this.onResizeBound);
 
     setTimeout(() => this.callbacks.onLoadingComplete(), 2500);
   }
@@ -553,15 +563,15 @@ export class TarotSceneManager {
   public cleanup() {
     this.isDisposed = true;
     cancelAnimationFrame(this.animationId);
-    window.removeEventListener("resize", this.onResize.bind(this));
+    window.removeEventListener("resize", this.onResizeBound);
     if (this.renderer && this.renderer.domElement) {
       this.renderer.domElement.removeEventListener(
         "mousedown",
-        this.onMouseDown.bind(this)
+        this.onMouseDownBound
       );
       this.renderer.domElement.removeEventListener(
         "mousemove",
-        this.onMouseMove.bind(this)
+        this.onMouseMoveBound
       );
     }
     this.scene.traverse((object: any) => {
