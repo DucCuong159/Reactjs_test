@@ -1,5 +1,5 @@
-import { SmileOutlined } from "@ant-design/icons";
-import { Button, Result } from "antd";
+import { SmileOutlined, StarOutlined } from "@ant-design/icons";
+import { Button, Result, Space } from "antd";
 import { useHistory } from "react-router-dom";
 import "./Home.scss";
 
@@ -13,13 +13,22 @@ const Home = () => {
         title="Welcome to Task Management"
         subTitle="Organize your tasks efficiently with our intuitive todo list application"
         extra={
-          <Button
-            type="primary"
-            size="large"
-            onClick={() => history.push("/todo-list")}
-          >
-            Go to Todo List
-          </Button>
+          <Space size="middle">
+            <Button
+              type="primary"
+              size="large"
+              onClick={() => history.push("/todo-list")}
+            >
+              Go to Todo List
+            </Button>
+            <Button
+              size="large"
+              icon={<StarOutlined />}
+              onClick={() => history.push("/tarot")}
+            >
+              Tarot Reading
+            </Button>
+          </Space>
         }
       />
     </div>
