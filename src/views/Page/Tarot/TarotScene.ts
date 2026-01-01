@@ -89,20 +89,20 @@ export class TarotSceneManager {
       this.container.clientHeight
     );
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.toneMapping = THREE.NoToneMapping; // Quay về chuẩn cũ
+    this.renderer.toneMapping = THREE.NoToneMapping;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.domElement.style.touchAction = "none";
     this.container.appendChild(this.renderer.domElement);
 
     const ambient = new THREE.AmbientLight(
       SCENE_CONFIG.lighting.ambient.color,
-      SCENE_CONFIG.lighting.ambient.intensity * 6.0 // Tăng mạnh ánh sáng môi trường
+      SCENE_CONFIG.lighting.ambient.intensity * 6.0
     );
     this.scene.add(ambient);
 
     const spotLight = new THREE.SpotLight(
       SCENE_CONFIG.lighting.spot.color,
-      SCENE_CONFIG.lighting.spot.intensity * 5.0 // Tăng đèn chiếu điểm
+      SCENE_CONFIG.lighting.spot.intensity * 5.0
     );
     spotLight.position.set(
       SCENE_CONFIG.lighting.spot.position.x,
@@ -202,12 +202,12 @@ export class TarotSceneManager {
         texture.colorSpace = THREE.SRGBColorSpace;
       },
       undefined, // onProgress
-      (error) => {
-        console.error("Failed to load card back texture:", error);
+      () => {
+        // Silently handle error or add fallback logic if needed
       }
     );
     const matEdge = new THREE.MeshStandardMaterial({
-      color: 0xf5f5f0, // Màu trắng ngà / Bạc ấm (Very pale beige/silver)
+      color: 0xf5f5f0,
       metalness: 0.1,
       roughness: 0.5,
     });
@@ -233,11 +233,7 @@ export class TarotSceneManager {
           matFront.needsUpdate = true;
         },
         undefined, // onProgress
-        (error) => {
-          console.error(
-            `Failed to load texture for card "${data.name}" (${data.url}):`,
-            error
-          );
+        () => {
           // Apply red tint on error asynchronously
           matFront.color.setHex(0xff0000);
         }
@@ -369,7 +365,7 @@ export class TarotSceneManager {
     // Fire callback to update UI
     this.callbacks.onCardPicked(this.storedCards.length + 1);
 
-    // Đảm bảo lá bài luôn hiện trên cùng tuyệt đối
+    // Ensure card is always on top
     card.renderOrder = 999;
     (card.material as THREE.MeshStandardMaterial[]).forEach((m) => {
       m.depthTest = false;
@@ -603,16 +599,8 @@ export class TarotSceneManager {
     this.isDisposed = true;
     cancelAnimationFrame(this.animationId);
     window.removeEventListener("resize", this.onResizeBound);
-    if (this.renderer && this.renderer.domElement) {
-      this.renderer.domElement.removeEventListener(
-        "mousedown",
-        this.onMouseDownBound
-      );
-      this.renderer.domElement.removeEventListener(
-        "mousemove",
-        this.onMouseMoveBound
-      );
-    }
+    this.container.removeEventListener("pointerdown", this.onMouseDownBound);
+    this.container.removeEventListener("pointermove", this.onMouseMoveBound);
     this.scene.traverse((object: any) => {
       if (object.isMesh || object.isPoints) {
         if (object.geometry) object.geometry.dispose();
