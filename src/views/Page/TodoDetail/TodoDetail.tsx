@@ -41,7 +41,7 @@ import "./TodoDetail.scss";
 
 const { Title, Text, Paragraph } = Typography;
 
-export default function TodoDetail() {
+const TodoDetail = () => {
   const { id } = useParams<{ id: string }>();
   const history = useHistory();
   const dispatch = useAppDispatch();
@@ -257,7 +257,11 @@ export default function TodoDetail() {
           <>
             {/* Left: Info */}
             <Card title="To Do Information" className="todo-detail-info">
-              <Space orientation="vertical" size="large" className="info-content">
+              <Space
+                orientation="vertical"
+                size="large"
+                className="info-content"
+              >
                 <div className="info-section">
                   <Title level={5}>Status</Title>
                   <StatusTag status={todo!.status}>
@@ -333,4 +337,6 @@ export default function TodoDetail() {
       </div>
     </div>
   );
-}
+};
+
+export default TodoDetail;

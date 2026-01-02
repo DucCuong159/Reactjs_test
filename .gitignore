@@ -27,7 +27,3 @@ Thumbs.db
 
 # Environment Variables
 .env*.local
-
-# Other
-.eslintcache
-package-lock.json

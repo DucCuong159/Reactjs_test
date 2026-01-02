@@ -1,13 +1,5 @@
 import { UploadOutlined } from "@ant-design/icons";
-import {
-  Form as AntdForm,
-  Button,
-  DatePicker,
-  Input,
-  Radio,
-  Upload,
-  UploadFile,
-} from "antd";
+import { Button, DatePicker, Input, Radio, Upload, UploadFile } from "antd";
 import locale from "antd/es/date-picker/locale/vi_VN";
 import dayjs from "dayjs";
 import React from "react";
@@ -119,7 +111,7 @@ export const TodoForm = React.forwardRef<TodoFormRef, TodoFormProps>(
           return (
             <>
               {/* 🎓 RADIO BUTTONS: Using Controller + AntD Radio */}
-              <AntdForm.Item
+              <Form.Item
                 label={<FormLabel required>Status</FormLabel>}
                 validateStatus={errors.status ? "error" : ""}
                 help={errors.status?.message as string}
@@ -135,10 +127,10 @@ export const TodoForm = React.forwardRef<TodoFormRef, TodoFormProps>(
                     </Radio.Group>
                   )}
                 />
-              </AntdForm.Item>
+              </Form.Item>
 
               {/* 🎓 TEXT INPUT: Using Controller for AntD Input */}
-              <AntdForm.Item
+              <Form.Item
                 label={<FormLabel required>Task Name</FormLabel>}
                 validateStatus={errors.name ? "error" : ""}
                 help={errors.name?.message as string}
@@ -158,10 +150,10 @@ export const TodoForm = React.forwardRef<TodoFormRef, TodoFormProps>(
                     />
                   )}
                 />
-              </AntdForm.Item>
+              </Form.Item>
 
               {/* 🎓 TEXTAREA: Using Controller for AntD TextArea */}
-              <AntdForm.Item
+              <Form.Item
                 label={<FormLabel required>Description</FormLabel>}
                 validateStatus={errors.description ? "error" : ""}
                 help={errors.description?.message as string}
@@ -182,10 +174,10 @@ export const TodoForm = React.forwardRef<TodoFormRef, TodoFormProps>(
                     />
                   )}
                 />
-              </AntdForm.Item>
+              </Form.Item>
 
               {/* 🎓 CONTROLLER: For complex components (Ant Design RangePicker) */}
-              <AntdForm.Item
+              <Form.Item
                 label={<FormLabel required>Timeline</FormLabel>}
                 validateStatus={errors.dateRange ? "error" : ""}
                 help={errors.dateRange?.message as string}
@@ -216,10 +208,10 @@ export const TodoForm = React.forwardRef<TodoFormRef, TodoFormProps>(
                     />
                   )}
                 />
-              </AntdForm.Item>
+              </Form.Item>
 
               {/* 🎓 FILE INPUT: Using Controller + AntD Upload */}
-              <AntdForm.Item
+              <Form.Item
                 label="Attachments"
                 validateStatus={errors.attachments ? "error" : ""}
                 help={errors.attachments?.message as string}
@@ -278,7 +270,7 @@ export const TodoForm = React.forwardRef<TodoFormRef, TodoFormProps>(
                     );
                   }}
                 />
-              </AntdForm.Item>
+              </Form.Item>
             </>
           );
         }}

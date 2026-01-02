@@ -4,6 +4,7 @@ import "./App.scss";
 import { NavBar } from "./common/NavBar";
 import { ScrollToTop } from "./common/ScrollToTop";
 import Home from "./Page/Home/Home";
+import Login from "./Page/Login/Login";
 import TarotAR from "./Page/Tarot/TarotAR";
 import TodoDetail from "./Page/TodoDetail/TodoDetail";
 import TodoList from "./Page/TodoList/TodoList";
@@ -25,6 +26,7 @@ function App() {
           <Route path="/todo-edit/:id" component={TodoDetail} exact />
           <Route path="/todo/:id" component={TodoDetail} exact />
           <Route path="/tarot" component={TarotAR} exact />
+          <Route path="/login" component={Login} exact />
         </Switch>
       </Content>
     </Layout>
