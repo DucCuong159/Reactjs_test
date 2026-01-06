@@ -141,6 +141,8 @@ export const TodoForm = React.forwardRef<TodoFormRef, TodoFormProps>(
                   render={({ field }) => (
                     <Input
                       {...field}
+                      id="task-name"
+                      name="name"
                       placeholder="Enter task name..."
                       maxLength={100}
                       count={{
@@ -164,6 +166,8 @@ export const TodoForm = React.forwardRef<TodoFormRef, TodoFormProps>(
                   render={({ field }) => (
                     <TextArea
                       {...field}
+                      id="task-description"
+                      name="description"
                       placeholder="Enter description..."
                       rows={4}
                       maxLength={500}
@@ -189,6 +193,8 @@ export const TodoForm = React.forwardRef<TodoFormRef, TodoFormProps>(
                     <RangePicker
                       locale={locale}
                       className="date-range-picker"
+                      id="task-daterange"
+                      name="dateRange"
                       value={
                         field.value && field.value[0] && field.value[1]
                           ? [dayjs(field.value[0]), dayjs(field.value[1])]
@@ -255,6 +261,8 @@ export const TodoForm = React.forwardRef<TodoFormRef, TodoFormProps>(
                         listType="picture"
                         fileList={fileList}
                         beforeUpload={() => false}
+                        id="attachments"
+                        name="attachments"
                         multiple
                         onChange={({ fileList: newFileList }) => {
                           const nextValue = newFileList.map((file) => {

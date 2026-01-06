@@ -1,110 +1,31 @@
 @import "../../../styles/variables";
 @import "../../../styles/mixins";
 
-/* TodoList.scss */
 .todo-container {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-2xl;
   margin: 0;
-  padding: $spacing-2xl $spacing-3xl;
-  background: $gray-100;
+  padding: $spacing-lg $spacing-xl;
+  background: $gray-50;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   min-height: 100vh;
 }
 
-.todo-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: $spacing-lg;
-  margin-bottom: $spacing-2xl;
-  align-items: start;
-}
-
-.todo-item {
-  @include flex-start;
-  gap: $spacing-lg;
-  padding: $spacing-md;
-  border: 2px solid $gray-200;
-  border-radius: $border-radius-lg;
-  background: white;
-  transition: all $transition-base;
-  position: relative;
-
-  &:hover {
-    border-color: $gray-300;
-    @include card-shadow;
-  }
-
-  @include apply-status-modifiers;
-}
-
-.todo-content {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.todo-main {
-  @include flex-between;
-  gap: $spacing-lg;
-  margin-bottom: $spacing-xs;
-}
-
-.todo-name {
-  font-size: $font-size-lg;
-  font-weight: $font-weight-semibold;
-  color: $gray-800;
-  margin: 0;
-  flex: 1;
-  min-width: 0;
-  text-align: left;
-  @include text-ellipsis(1);
-  overflow-wrap: break-word;
-}
-
-.todo-status {
-  &.status-todo {
-    @include status-badge($status-todo-bg, $status-todo-text);
-  }
-
-  &.status-in-progress {
-    @include status-badge($status-in-progress-bg, $status-in-progress-text);
-  }
-
-  &.status-done {
-    @include status-badge($status-done-bg, $status-done-text);
-  }
-}
-
-.todo-description {
-  color: $gray-500;
-  font-size: $font-size-base;
-  line-height: 1.5;
-  margin: 0 0 $spacing-sm 0;
-  text-align: left;
-  @include text-ellipsis(2);
-  word-break: normal;
-  overflow-wrap: break-word;
-}
-
-.todo-dates {
+.todo-list-body {
   display: flex;
-  gap: $spacing-lg;
-  flex-wrap: wrap;
-  font-size: $font-size-sm;
-  color: $gray-500;
+  flex-direction: column;
+  gap: $spacing-md;
 }
 
-.todo-date,
-.todo-attachments {
-  @include flex-start;
-  gap: $spacing-xs;
-}
-
-// Ant Design Card styling
 .todo-item-card {
   height: 100%;
 
   .ant-card-body {
     padding: $spacing-md;
+    background: white;
+    border-radius: $border-radius-md;
+    box-shadow: $shadow-md;
   }
 
   .todo-name.ant-typography {
@@ -140,68 +61,18 @@
   @include apply-status-modifiers;
 }
 
-.todo-actions {
-  display: flex;
-  gap: $spacing-sm;
-  flex-direction: column;
-  align-self: center;
-}
-
-.edit-btn,
-.delete-btn {
-  padding: $spacing-sm;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: $font-size-xl;
-  border-radius: $border-radius-sm;
-  transition: all $transition-fast;
-  width: $btn-icon-size;
-  height: $btn-icon-size;
-  @include flex-center;
-}
-
-.edit-btn {
-  color: $primary-color;
-
-  &:hover {
-    background: rgba($primary-color, 0.1);
-    transform: scale(1.1);
-  }
-}
-
-.delete-btn {
-  color: $danger-color;
-
-  &:hover {
-    background: rgba($danger-color, 0.1);
-    transform: scale(1.1);
-  }
-}
-
-/* Results count */
 .results-count {
   font-size: $font-size-lg;
   color: $gray-800;
-  margin-bottom: $spacing-lg;
   font-weight: $font-weight-bold;
   text-align: left;
 }
 
-/* Sortable.js specific styles */
-.sortable-ghost {
-  opacity: 0.4;
-  background: $gray-100 !important;
-}
-
-.sortable-chosen {
-  transform: scale(1.02);
-  @include card-shadow;
-}
-
-.sortable-drag {
-  background: white !important;
-  box-shadow: $shadow-lg;
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
 }
 
 /* Responsive design */
@@ -209,10 +80,6 @@
   .todo-container {
     margin: $spacing-lg;
     padding: $spacing-xl;
-  }
-
-  .todo-item {
-    padding: $spacing-lg;
   }
 }
 
@@ -222,36 +89,15 @@
     padding: $spacing-lg;
   }
 
-  .todo-item {
-    padding: $spacing-md;
-    gap: $spacing-md;
-  }
+  .todo-item-card {
+    .todo-name.ant-typography {
+      font-size: $font-size-md;
+    }
 
-  .todo-name {
-    font-size: $font-size-md;
+    .todo-description.ant-typography {
+      font-size: $font-size-sm;
+    }
   }
-
-  .todo-description {
-    font-size: $font-size-sm;
-  }
-
-  .drag-handle {
-    font-size: $font-size-md;
-  }
-
-  .edit-btn,
-  .delete-btn {
-    width: $btn-icon-size-mobile;
-    height: $btn-icon-size-mobile;
-    font-size: $font-size-md;
-  }
-}
-
-.pagination-container {
-  display: flex;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
 }
 
 /* Custom styles for FormPopup integration */
@@ -278,20 +124,6 @@
   @include icon-size($icon-size-md);
 }
 
-.icon-plus {
-  @include icon-size($icon-size-lg);
-}
-
-.icon-edit,
-.icon-delete {
-  @include icon-size($icon-size-lg);
-}
-
 .icon-attachment {
   @include icon-size($icon-size-md);
-}
-
-.icon-drag-handle {
-  @include icon-size($icon-size-md);
-  opacity: 0.6;
 }
