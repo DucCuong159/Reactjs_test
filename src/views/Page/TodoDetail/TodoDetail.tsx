@@ -12,6 +12,7 @@ import { useEffect, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import AttachmentIcon from "../../../assets/svg/attachment.svg?react";
 import CalendarIcon from "../../../assets/svg/calendar.svg?react";
+import { PATHS } from "../../../constants/paths";
 import { useConfirmModals } from "../../../hooks/useConfirmModals";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import {
@@ -80,18 +81,16 @@ const TodoDetail = () => {
 
   if (!isCreateMode && !todo) {
     return (
-      <div className="todo-detail-container">
-        <Result
-          status="404"
-          title="Todo not found"
-          subTitle="The todo you're looking for doesn't exist."
-          extra={
-            <Button type="primary" onClick={() => history.push("/todo-list")}>
-              Back to List
-            </Button>
-          }
-        />
-      </div>
+      <Result
+        status="404"
+        title="Todo not found"
+        subTitle="The todo you're looking for doesn't exist."
+        extra={
+          <Button type="primary" onClick={() => history.push(PATHS.TODO)}>
+            Back to List
+          </Button>
+        }
+      />
     );
   }
 
@@ -117,10 +116,7 @@ const TodoDetail = () => {
               })
             );
             message.success("Task created successfully!");
-            // Cleanup temporary blob URLs after navigation
-            // Note: We don't revoke here because Redux now owns these URLs
-            // They will be cleaned up when the todo is deleted or updated
-            history.push("/todo-list");
+            history.push(PATHS.TODO);
           } else {
             revokeBlobUrls(todo!.attachments);
 
@@ -150,25 +146,24 @@ const TodoDetail = () => {
   const handleDelete = () => {
     confirmDelete({
       onConfirm: () => {
-        // Cleanup blob URLs before deleting
         if (todo?.attachments) revokeBlobUrls(todo.attachments);
         dispatch(deleteTodoAction(todo!.id));
         message.success("Task deleted successfully!");
-        history.push("/todo-list");
+        history.push(PATHS.TODO);
       },
     });
   };
 
   const handleCancel = () => {
     if (isCreateMode) {
-      history.push("/todo-list");
+      history.push(PATHS.TODO);
     } else {
       dispatch(setEditMode(false));
     }
   };
 
   return (
-    <div className="todo-detail-container">
+    <>
       {/* Header */}
       <Flex vertical gap="middle" className="todo-detail-header">
         <BackLink />
@@ -335,7 +330,7 @@ const TodoDetail = () => {
           </>
         )}
       </div>
-    </div>
+    </>
   );
 };
 
