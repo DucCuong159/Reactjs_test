@@ -1,8 +1,11 @@
 import { Button, Card, Input, Layout, message, Space, Typography } from "antd";
-import React from "react";
+import { useRef, useState } from "react";
 import { Controller } from "react-hook-form";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { z } from "zod";
+import { PATHS } from "../../../constants/paths";
+import { useAppDispatch } from "../../../store/hooks";
+import { setAuthUser } from "../../../store/slices/authSlice";
 import { supabase } from "../../../utils/supabaseClient";
 import { Form, FormRef } from "../../common/Form/Form";
 import "./Login.scss";
@@ -10,18 +13,59 @@ import "./Login.scss";
 const { Title, Text } = Typography;
 const { Content } = Layout;
 
-const loginSchema = z.object({
+// Constants
+const LOGIN_SCHEMA = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-type LoginFormData = z.infer<typeof loginSchema>;
+const UI_TEXT = {
+  SIGN_UP: {
+    title: "Sign Up",
+    subtitle: "Sign up to access to this app",
+    button: "Sign Up",
+    toggle: "Already have an account? Log In",
+    successMessage: "Please check your email to confirm your account!",
+  },
+  LOG_IN: {
+    title: "Log In",
+    subtitle: "Please log in to continue",
+    button: "Log In",
+    toggle: "Don't have an account? Sign Up",
+    successMessage: "Logged in successfully!",
+  },
+  ERROR: "Authentication failed",
+} as const;
+
+const FORM_DEFAULTS = {
+  email: "",
+  password: "",
+};
+
+const INPUT_SIZE = "large";
+
+const getErrorMessage = (error: any) => {
+  if (
+    error.code === "invalid_credentials" ||
+    error.message === "Invalid login credentials"
+  ) {
+    return "Email or password is incorrect";
+  }
+  return error.message || UI_TEXT.ERROR;
+};
+
+type LoginFormData = z.infer<typeof LOGIN_SCHEMA>;
 
 const Login = () => {
-  const [loading, setLoading] = React.useState(false);
-  const [isSignUp, setIsSignUp] = React.useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
   const history = useHistory();
-  const formRef = React.useRef<FormRef<LoginFormData>>(null);
+  const location = useLocation<{ from?: Location }>();
+  const dispatch = useAppDispatch();
+  const formRef = useRef<FormRef<LoginFormData>>(null);
+
+  const currentMode = isSignUp ? UI_TEXT.SIGN_UP : UI_TEXT.LOG_IN;
+  const passwordAutoComplete = isSignUp ? "new-password" : "current-password";
 
   const handleToggleMode = () => {
     setIsSignUp(!isSignUp);
@@ -34,24 +78,30 @@ const Login = () => {
 
     try {
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
+        const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        message.success("Please check your email to confirm your account!");
+
+        message.success(currentMode.successMessage);
         handleToggleMode();
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         if (error) throw error;
-        message.success("Logged in successfully!");
-        history.push("/");
+
+        if (data.user && data.session) {
+          dispatch(setAuthUser({ user: data.user, session: data.session }));
+        }
+
+        message.success(currentMode.successMessage);
+
+        // Redirect to return URL or home
+        const from = location.state?.from?.pathname || PATHS.HOME;
+        history.push(from);
       }
     } catch (error: any) {
-      message.error(error.message || "Authentication failed");
+      message.error(getErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -67,20 +117,17 @@ const Login = () => {
             style={{ width: "100%" }}
           >
             <Title level={2} style={{ margin: 0 }}>
-              {isSignUp ? "Sign up" : "Log in"}
+              {currentMode.title}
             </Title>
-            <Text type="secondary">
-              {isSignUp
-                ? "Sign up to access to this app"
-                : "Please log in to continue"}
-            </Text>
+            <Text type="secondary">{currentMode.subtitle}</Text>
           </Space>
 
           <Form
             ref={formRef}
-            schema={loginSchema}
-            defaultValues={{ email: "", password: "" }}
+            schema={LOGIN_SCHEMA}
+            defaultValues={FORM_DEFAULTS}
             style={{ marginTop: "2rem" }}
+            onSubmit={handleAuth as any}
           >
             {({ control, handleSubmit, formState: { errors } }) => (
               <>
@@ -94,8 +141,10 @@ const Login = () => {
                     render={({ field }) => (
                       <Input
                         {...field}
+                        id="email"
+                        name="email"
                         placeholder="Email"
-                        size="large"
+                        size={INPUT_SIZE}
                         autoComplete="email"
                       />
                     )}
@@ -112,9 +161,11 @@ const Login = () => {
                     render={({ field }) => (
                       <Input.Password
                         {...field}
+                        id="password"
+                        name="password"
                         placeholder="Password"
-                        size="large"
-                        autoComplete="current-password"
+                        size={INPUT_SIZE}
+                        autoComplete={passwordAutoComplete}
                       />
                     )}
                   />
@@ -125,10 +176,10 @@ const Login = () => {
                     type="primary"
                     onClick={handleSubmit(handleAuth as any)}
                     block
-                    size="large"
+                    size={INPUT_SIZE}
                     loading={loading}
                   >
-                    {isSignUp ? "Sign Up" : "Log In"}
+                    {currentMode.button}
                   </Button>
                 </Form.Item>
               </>
@@ -140,9 +191,7 @@ const Login = () => {
             onClick={handleToggleMode}
             style={{ textAlign: "center", width: "100%" }}
           >
-            {isSignUp
-              ? "Already have an account? Log In"
-              : "Don't have an account? Sign Up"}
+            {currentMode.toggle}
           </Button>
         </Card>
       </Content>

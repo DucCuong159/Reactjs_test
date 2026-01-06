@@ -1,6 +1,9 @@
 .login-layout {
-  min-height: 100vh;
+  min-height: calc(100vh - 64px);
+  margin: -24px;
+
   .login-content {
+    min-height: calc(100vh - 64px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,8 +11,27 @@
   }
 
   .login-card {
-    width: 100%;
-    max-width: 400px;
+    width: 30%;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+    // Tablet: 768px - 1024px
+    @media (max-width: 1024px) {
+      width: 40%;
+    }
+
+    // Small tablet: 600px - 768px
+    @media (max-width: 768px) {
+      width: 50%;
+    }
+
+    // Mobile: 480px - 600px
+    @media (max-width: 600px) {
+      width: 60%;
+    }
+
+    // Extra small mobile: < 480px
+    @media (max-width: 480px) {
+      width: 70%;
+    }
   }
 }
