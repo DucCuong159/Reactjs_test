@@ -1,14 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
-import todoSlice from "./slices/todoSlice";
-import todoDetailSlice from "./slices/todoDetailSlice";
-
+import authSlice from "./slices/authSlice";
 import tarotSlice from "./slices/tarotSlice";
+import todoDetailSlice from "./slices/todoDetailSlice";
+import todoSlice from "./slices/todoSlice";
 
 export const store = configureStore({
   reducer: {
     todos: todoSlice,
     todoDetail: todoDetailSlice,
     tarot: tarotSlice,
+    auth: authSlice,
   },
 });
 
