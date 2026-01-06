@@ -15,6 +15,7 @@ export interface TarotSceneCallbacks {
   onLoadingComplete: () => void;
   onCardPicked: (count: number) => void;
   onSelectionComplete: (cards: CardData[]) => void;
+  onError?: (error: Error) => void;
 }
 
 export class TarotSceneManager {
@@ -58,8 +59,17 @@ export class TarotSceneManager {
     this.onResizeBound = this.onResize.bind(this);
     this.animateBound = this.animate.bind(this);
 
-    this.init();
-    this.animateBound(0);
+    try {
+      this.init();
+      this.animateBound(0);
+    } catch (error) {
+      console.error("Failed to initialize TarotScene:", error);
+      if (this.callbacks.onError) {
+        this.callbacks.onError(
+          error instanceof Error ? error : new Error(String(error))
+        );
+      }
+    }
   }
 
   private init() {
@@ -79,11 +89,16 @@ export class TarotSceneManager {
     );
     this.camera.position.set(0, 0, SCENE_CONFIG.camera.position.z);
 
-    this.renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: true,
-      powerPreference: "high-performance",
-    });
+    try {
+      this.renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance",
+      });
+    } catch {
+      throw new Error("WebGL is not supported or disabled in this browser.");
+    }
+
     this.renderer.setSize(
       this.container.clientWidth,
       this.container.clientHeight
