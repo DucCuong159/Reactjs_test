@@ -4,7 +4,7 @@ import { Route, Switch } from "react-router-dom";
 import ProtectedRoute from "../components/ProtectedRoute/ProtectedRoute";
 import { PATHS } from "../constants/paths";
 import { useAppDispatch } from "../store/hooks";
-import { setAuthUser } from "../store/slices/authSlice";
+import { setAuthLoading, setAuthUser } from "../store/slices/authSlice";
 import { setupAuthListener } from "../utils/authListener";
 import { supabase } from "../utils/supabaseClient";
 import "./App.scss";
@@ -22,9 +22,15 @@ function App() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    // Set loading state before checking session
+    dispatch(setAuthLoading(true));
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         dispatch(setAuthUser({ user: session.user, session }));
+      } else {
+        // No session, stop loading
+        dispatch(setAuthLoading(false));
       }
     });
 

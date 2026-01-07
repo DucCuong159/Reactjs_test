@@ -1,5 +1,4 @@
 import { Flex, Space, Spin, Typography } from "antd";
-import { useEffect, useState } from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
 import { PATHS } from "../../constants/paths";
 import { useAppSelector } from "../../store/hooks";
@@ -15,16 +14,7 @@ const ProtectedRoute = ({
   ...rest
 }: ProtectedRouteProps) => {
   const user = useAppSelector((state) => state.auth.user);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Wait for auth to initialize
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, []);
+  const isLoading = useAppSelector((state) => state.auth.loading);
 
   return (
     <Route
