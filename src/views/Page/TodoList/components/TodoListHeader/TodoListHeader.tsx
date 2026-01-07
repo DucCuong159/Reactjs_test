@@ -1,6 +1,7 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Button, Flex, Input, Select, Space } from "antd";
 import { useHistory } from "react-router-dom";
+import { PATHS } from "../../../../../constants/paths";
 import { useAppDispatch, useAppSelector } from "../../../../../store/hooks";
 import {
   setFilterStatus,
@@ -29,7 +30,7 @@ export const TodoListHeader: React.FC = () => {
           type="primary"
           icon={<PlusOutlined />}
           size="middle"
-          onClick={() => history.push("/todo-create")}
+          onClick={() => history.push(PATHS.TODO_CREATE)}
         >
           Add Task
         </Button>
@@ -38,6 +39,8 @@ export const TodoListHeader: React.FC = () => {
       {/* Filter, Search, Sort Toolbar */}
       <Flex gap="middle" wrap="wrap" align="center">
         <Search
+          id="search-input"
+          name="search-input"
           placeholder="Search tasks..."
           value={searchQuery}
           onChange={(e) => dispatch(setSearchQuery(e.target.value))}

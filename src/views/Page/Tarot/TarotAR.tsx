@@ -2,9 +2,10 @@ import {
   HistoryOutlined,
   MutedOutlined,
   SoundOutlined,
+  WarningOutlined,
 } from "@ant-design/icons";
-import { Button, Tooltip } from "antd";
-import React, { useEffect, useRef } from "react";
+import { Button, Result, Tooltip } from "antd";
+import React, { useEffect, useRef, useState } from "react";
 import { RootState } from "../../../store";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import {
@@ -31,6 +32,7 @@ import { soundManager } from "./utils/SoundManager";
 const TarotAR: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneManager = useRef<TarotSceneManager | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const dispatch = useAppDispatch();
   const {
@@ -55,7 +57,7 @@ const TarotAR: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (containerRef.current && !sceneManager.current) {
+    if (containerRef.current && !sceneManager.current && !error) {
       sceneManager.current = new TarotSceneManager(containerRef.current, {
         onLoadingComplete: () => dispatch(setLoading(false)),
         onCardPicked: (count) => {
@@ -66,6 +68,14 @@ const TarotAR: React.FC = () => {
           dispatch(completeSelection(cards));
           soundManager.playRevealSound(); // SFX: Reveal
         },
+        onError: (err) => {
+          console.error("Tarot AR Error:", err);
+          setError(err.message);
+          dispatch(setLoading(false));
+          // Cleanup if failed
+          sceneManager.current?.cleanup();
+          sceneManager.current = null;
+        },
       });
     }
 
@@ -73,13 +83,15 @@ const TarotAR: React.FC = () => {
       sceneManager.current?.cleanup();
       sceneManager.current = null;
     };
-  }, [dispatch]);
+  }, [dispatch, error]);
 
   const handleTopicSelect = (topic: TarotTopic) => {
     dispatch(setSelectedTopic(topic));
     dispatch(setStep(TarotStep.PICKING));
-    if (!sceneManager.current)
+    if (!sceneManager.current) {
       console.error("❌ Scene Manager not found during topic select!");
+      if (error) return;
+    }
     sceneManager.current?.startGame();
 
     // Start Audio
@@ -98,6 +110,44 @@ const TarotAR: React.FC = () => {
   const handleToggleMute = () => {
     dispatch(setMute(!isMuted));
   };
+
+  if (error) {
+    return (
+      <div className="tarot-container error-state">
+        <Result
+          status="warning"
+          icon={
+            <WarningOutlined style={{ color: "#faad14", fontSize: "48px" }} />
+          }
+          title="WebGL Not Supported"
+          subTitle={
+            <div style={{ color: "rgba(255, 255, 255, 0.85)" }}>
+              <p>{error}</p>
+              <p>
+                Please check if hardware acceleration is enabled in your browser
+                settings.
+              </p>
+            </div>
+          }
+          extra={
+            <Button type="primary" onClick={() => window.location.reload()}>
+              Reload Page
+            </Button>
+          }
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            background: "rgba(0,0,0,0.8)",
+            borderRadius: "16px",
+            padding: "32px",
+            zIndex: 1000,
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="tarot-container">

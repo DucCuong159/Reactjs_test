@@ -7,7 +7,7 @@ interface BackLinkProps {
 }
 
 export const BackLink: React.FC<BackLinkProps> = ({
-  to = "/todo-list",
+  to = "/todo",
   children = "Back to List",
 }) => {
   return (
