@@ -28,7 +28,7 @@ const ProtectedRoute = ({
               align="center"
               style={{ height: "calc(100vh - 64px)" }}
             >
-              <Space orientation="vertical" size="large" align="center">
+              <Space direction="vertical" size="large" align="center">
                 <Spin size="large" />
                 <Text type="secondary">Checking authentication...</Text>
               </Space>
