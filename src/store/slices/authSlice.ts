@@ -11,7 +11,7 @@ interface AuthState {
 const initialState: AuthState = {
   user: null,
   session: null,
-  loading: false,
+  loading: true, // Start as true to prevent redirect before session check
   error: null,
 };
 
